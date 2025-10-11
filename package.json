@@ -1,0 +1,30 @@
+{
+  "name": "token-vesting-smart-contract",
+  "version": "1.0.0",
+  "description": "A production-ready Solidity smart contract for time-locked token vesting schedules with cliff periods. Commonly used for employee equity, investor lockups, and team allocations in DeFi projects.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "hardhat test",
+    "compile": "hardhat compile",
+    "clean": "hardhat clean",
+    "deploy:local": "hardhat run scripts/deploy.js",
+    "deploy:sepolia": "hardhat run scripts/deploy.js --network baseSepolia",
+    "coverage": "hardhat coverage"
+  },
+  "keywords": [
+    "vesting",
+    "token",
+    "ethereum",
+    "solidity",
+    "smart-contract",
+    "defi"
+  ],
+  "author": "",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.4.0"
+  }
+}
