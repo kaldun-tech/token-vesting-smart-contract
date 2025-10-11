@@ -68,8 +68,42 @@ This project implements a trustless, transparent token vesting system on the Eth
 ### Prerequisites
 
 - Node.js v18+ and npm v9+
-- MetaMask or compatible Web3 wallet
-- Base Sepolia testnet ETH ([get from faucet](https://www.coinbase.com/faucets/base-ethereum-goerli-faucet))
+- MetaMask, Coinbase or other compatible Web3 wallet
+- Base Sepolia testnet ETH ([get from faucet](https://portal.cdp.coinbase.com/products/faucet))
+
+### MetaMask Setup for Base Sepolia
+
+If you don't have the Base Sepolia testnet configured in MetaMask:
+
+1. **Open MetaMask** browser extension
+2. **Click the network dropdown** (top left, usually says "Ethereum Mainnet")
+3. **Click "Add Network"** or "Add a network manually"
+4. **Enter these details**:
+   ```
+   Network Name: Base Sepolia
+   RPC URL: https://sepolia.base.org
+   Chain ID: 84532
+   Currency Symbol: ETH
+   Block Explorer: https://sepolia.basescan.org
+   ```
+5. **Click "Save"**
+6. **Switch to Base Sepolia** network from the dropdown
+
+#### Get Testnet ETH
+
+1. **Copy your wallet address** from MetaMask
+2. **Go to the faucet**: https://portal.cdp.coinbase.com/products/faucet
+3. **Select "Base Sepolia"** network (not Base Mainnet!)
+4. **Paste your address** and request testnet ETH
+5. **Wait ~30 seconds** - you should receive 0.1 ETH
+
+**⚠️ Important:** Make sure you're on **Base Sepolia** (testnet), NOT Base Mainnet!
+- Base Sepolia = Free test ETH, for development
+- Base Mainnet = Real ETH, costs real money
+
+You can verify which network you're on by checking:
+- MetaMask network dropdown says "Base Sepolia"
+- Block explorer URL is https://**sepolia**.basescan.org
 
 ### Installation
 
