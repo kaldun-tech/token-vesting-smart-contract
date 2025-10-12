@@ -1,0 +1,9 @@
+{
+  "network": "baseSepolia",
+  "timestamp": "2025-10-12T02:11:23.934Z",
+  "deployer": "0xF25DA65784D566fFCC60A1f113650afB688A14ED",
+  "contracts": {
+    "MockERC20": "0x751f3c0aF0Ed18d9F70108CD0c4d878Aa0De59A8",
+    "TokenVesting": "0xb682eb7BA41859Ed9f21EC95f44385a8967A16b5"
+  }
+}
