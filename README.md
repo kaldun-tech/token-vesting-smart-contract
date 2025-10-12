@@ -123,6 +123,9 @@ npx hardhat test
 
 # Deploy locally
 npx hardhat run scripts/deploy.js
+
+# Deploy to base sepolia
+npx hardhat run scripts/deploy.js --network baseSepolia
 ```
 
 ### Environment Setup
@@ -132,10 +135,13 @@ Create a `.env` file:
 ```bash
 PRIVATE_KEY=your_wallet_private_key_here
 BASE_SEPOLIA_RPC=https://sepolia.base.org
-BASESCAN_API_KEY=your_basescan_api_key_here
+ETHERSCAN_API_KEY=your_ETHERSCAN_api_key_here
 ```
 
 **Never commit your `.env` file to version control!**
+- Private key allows programmatic deployment via Hardhat scripts. Needed for Hardhat to sign transactions automatically.
+- Base Sepolia RPC is the URL of the Base Sepolia testnet.
+- API key is used to verify the contract on Etherscan or Basescan
 
 ---
 
@@ -290,7 +296,8 @@ npx hardhat test
 npx hardhat test test/TokenVesting.test.js
 
 # Run with gas reporting
-REPORT_GAS=true npx hardhat test
+export REPORT_GAS=true
+npx hardhat test
 
 # Run with coverage
 npx hardhat coverage
@@ -340,12 +347,14 @@ npx hardhat verify --network baseSepolia VESTING_ADDRESS "TOKEN_ADDRESS"
 
 #### Base Sepolia Testnet
 
-- **MockERC20 Token**: `TBD`
-- **TokenVesting Contract**: `TBD`
+- **MockERC20 Token**: `0x495D01f0Ec6E7701A6Ecc04045E4bB59F027e1E0`
+- **TokenVesting Contract**: `0x5D6709C5b1ED83125134672AFa905cA045978a1D`
+- **Deployer**: `0xF25DA65784D566fFCC60A1f113650afB688A14ED`
+- **Deployment Date**: October 11, 2025
 
 View on Basescan:
-- Token: [View Contract](https://sepolia.basescan.org/address/TBD)
-- Vesting: [View Contract](https://sepolia.basescan.org/address/TBD)
+- Token: [View Verified Contract](https://sepolia.basescan.org/address/0x495D01f0Ec6E7701A6Ecc04045E4bB59F027e1E0#code)
+- Vesting: [View Verified Contract](https://sepolia.basescan.org/address/0x5D6709C5b1ED83125134672AFa905cA045978a1D#code)
 
 ### Gas Costs
 

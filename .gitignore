@@ -149,3 +149,9 @@ ignition/deployments/chain-31337
 
 # Claude Code settings (user-specific)
 .claude/
+CLAUDE.md
+
+# Do not commit local test deployments
+deployments/hardhat.json
+deployments/localhost.json
+
