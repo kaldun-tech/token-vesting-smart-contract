@@ -468,6 +468,37 @@ python -m slither .
 
 **Why?** Sometimes the slither executable script isn't created during installation, but the Python module always works.
 
+#### Understanding Results
+
+Slither categorizes findings by severity:
+- 🔴 **High**: Critical vulnerabilities (reentrancy, access control issues)
+- 🟠 **Medium**: Potential issues that may cause problems
+- 🟡 **Low**: Code quality or minor safety concerns
+- 🔵 **Informational**: Best practices and optimization suggestions
+
+**Our contracts**: All findings are **Low/Informational** - no critical issues! ✅
+
+Common informational findings you can safely ignore:
+- **Timestamp usage**: Expected for vesting contracts (15-second miner manipulation doesn't affect multi-day schedules)
+- **Variable shadowing in constructors**: Standard pattern for ERC20 tokens
+- **Assembly in OpenZeppelin**: Audited library code
+- **Multiple Solidity versions**: Normal when using dependencies
+- **Strict equality**: Safe when checking for existence (`amount == 0`)
+
+#### Filtering Results
+
+Use `.slither.config.json` to customize which detectors run:
+
+```json
+{
+  "detectors_to_exclude": "pragma,solc-version,assembly,shadowing-local,timestamp",
+  "exclude_dependencies": true,
+  "filter_paths": "node_modules"
+}
+```
+
+This focuses Slither on your contract code and excludes common false positives.
+
 ---
 
 ## Deployment
