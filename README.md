@@ -202,7 +202,44 @@ Year 0    Year 1         Year 2    Year 3    Year 4
            cliff
 ```
 
-For detailed architecture diagrams and technical specifications, see [CLAUDE.md](./CLAUDE.md).
+### Vesting Calculation Algorithm
+
+The contract calculates vested amounts using a linear interpolation formula:
+
+```solidity
+/**
+ * Vesting Calculation Logic:
+ * - Before cliff: 0% vested
+ * - After duration: 100% vested
+ * - During vesting: vestedAmount = totalAmount × (timeElapsed / totalDuration)
+ */
+function _vestedAmount(address beneficiary) private view returns (uint256) {
+    VestingSchedule storage schedule = vestingSchedules[beneficiary];
+
+    if (block.timestamp < schedule.cliff) {
+        return 0;  // Cliff period - no tokens vested
+    }
+
+    if (block.timestamp >= schedule.start + schedule.duration) {
+        return schedule.amount;  // Fully vested
+    }
+
+    // Linear vesting during the vesting period
+    uint256 timeElapsed = block.timestamp - schedule.start;
+    return (schedule.amount * timeElapsed) / schedule.duration;
+}
+```
+
+### State Machine
+
+The vesting schedule follows these states:
+
+```
+NoSchedule → Active → CliffPeriod → Vesting → PartiallyReleased → FullyVested
+                ↓           ↓           ↓              ↓
+              Revoked     Revoked     Revoked      Revoked
+              (if revocable is enabled)
+```
 
 ---
 
@@ -399,15 +436,48 @@ View on Basescan:
 
 ## Documentation
 
-### Available Documentation
+### Contract Specifications
 
-- **[CLAUDE.md](./CLAUDE.md)**: Comprehensive technical documentation with:
-  - Software architect perspective
-  - Developer deep-dive
-  - Product manager analysis
-  - Mermaid diagrams and visualizations
-  - Security analysis
-  - Integration patterns
+#### TokenVesting.sol
+
+**Key Components**:
+- **Solidity Version**: ^0.8.20
+- **Dependencies**: OpenZeppelin's IERC20 and ReentrancyGuard
+
+**State Variables**:
+```solidity
+IERC20 public immutable token;
+mapping(address => VestingSchedule) public vestingSchedules;
+```
+
+**Struct**:
+```solidity
+struct VestingSchedule {
+    address beneficiary;
+    uint256 start;      // Start timestamp
+    uint256 cliff;      // Cliff timestamp (start + cliffDuration)
+    uint256 duration;   // Total vesting duration in seconds
+    uint256 amount;     // Total tokens to vest
+    uint256 released;   // Tokens already released
+    bool revocable;     // Can schedule be revoked?
+    bool revoked;       // Has it been revoked?
+}
+```
+
+**Events**:
+```solidity
+event VestingScheduleCreated(
+    address indexed beneficiary,
+    uint256 amount,
+    uint256 start,
+    uint256 cliff,
+    uint256 duration
+);
+event TokensReleased(address indexed beneficiary, uint256 amount);
+event VestingRevoked(address indexed beneficiary, uint256 refunded);
+```
+
+### Additional Documentation
 
 - **[contracts/](./contracts/)**: Solidity source code with inline comments
 - **[test/](./test/)**: Test specifications and examples
@@ -437,7 +507,6 @@ token-vesting-smart-contract/
 ├── package.json               # Dependencies
 ├── .env.example               # Environment template
 ├── README.md                  # This file
-├── CLAUDE.md                  # Technical deep-dive
 └── LICENSE                    # GPL-3.0 license
 ```
 
@@ -458,7 +527,7 @@ Contributions are welcome! Please follow these steps:
 - Write tests for all new features
 - Follow Solidity style guide
 - Add inline documentation
-- Update README and CLAUDE.md as needed
+- Update README as needed
 - Run `npx hardhat test` before submitting PR
 
 ---
