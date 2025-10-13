@@ -1,0 +1,23 @@
+# Python dependencies for security analysis and development tools
+# Install with: pip install -r requirements.txt
+#
+# Recommended: Use a virtual environment
+#   python3 -m venv venv
+#   source venv/bin/activate  # On Windows: venv\Scripts\activate
+#   pip install -r requirements.txt
+
+# Slither - Solidity static analysis framework
+# https://github.com/crytic/slither
+slither-analyzer==0.11.3
+
+# Supporting tools (installed automatically with slither-analyzer)
+crytic-compile==0.3.10
+
+# Note: Additional dependencies are automatically installed:
+# - eth-abi (Ethereum ABI encoding/decoding)
+# - eth-typing (Common Ethereum types)
+# - eth-utils (Ethereum utility functions)
+# - packaging (Version parsing)
+# - prettytable (Formatted table output)
+# - pycryptodome (Cryptographic functions)
+# - web3 (Ethereum Python library)

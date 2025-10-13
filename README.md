@@ -14,6 +14,8 @@ A production-ready Solidity smart contract for time-locked token vesting schedul
 - [Architecture](#architecture)
 - [Usage](#usage)
 - [Testing](#testing)
+  - [Running Tests](#running-tests)
+  - [Static Analysis with Slither](#static-analysis-with-slither)
 - [Deployment](#deployment)
 - [Security](#security)
 - [Documentation](#documentation)
@@ -395,6 +397,76 @@ Our test suite covers:
 - ✅ Reentrancy protection
 
 **Current Coverage: 100% statements, branches, functions, and lines**
+
+### Static Analysis with Slither
+
+[Slither](https://github.com/crytic/slither) is a Solidity static analysis framework that detects vulnerabilities and code quality issues.
+
+#### Setup
+
+```bash
+# Create Python virtual environment (one-time setup)
+python3 -m venv venv
+
+# Activate virtual environment
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install Slither
+pip install slither-analyzer
+
+# Install solc-select (Slither dependency for Solidity version management)
+pip install solc-select
+```
+
+#### Running Slither
+
+```bash
+# Activate venv first
+source venv/bin/activate
+
+# Run basic analysis
+python -m slither .
+
+# Run with human-readable summary
+python -m slither . --print human-summary
+
+# Check for specific vulnerability classes
+python -m slither . --detect reentrancy-eth,reentrancy-no-eth
+
+# Generate detailed report
+python -m slither . --json slither-report.json
+```
+
+#### Common Slither Commands
+
+```bash
+# List all available detectors
+python -m slither . --list-detectors
+
+# Exclude specific checks
+python -m slither . --exclude naming-convention,solc-version
+
+# Check only high/medium severity issues
+python -m slither . --exclude-low --exclude-informational
+```
+
+#### Automated Analysis
+
+Slither runs automatically on every push via GitHub Actions (`.github/workflows/slither.yml`). Check the Actions tab in your repository to see results.
+
+#### Troubleshooting
+
+If `slither` command doesn't work directly, use `python -m slither` instead:
+
+```bash
+# Instead of:
+slither .
+
+# Use:
+python -m slither .
+```
+
+**Why?** Sometimes the slither executable script isn't created during installation, but the Python module always works.
 
 ---
 
