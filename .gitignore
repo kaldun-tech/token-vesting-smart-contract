@@ -151,7 +151,9 @@ ignition/deployments/chain-31337
 .claude/
 CLAUDE.md
 
-# Do not commit local test deployments
+# Local test deployments
 deployments/hardhat.json
 deployments/localhost.json
 
+# Python virtual environment
+venv
