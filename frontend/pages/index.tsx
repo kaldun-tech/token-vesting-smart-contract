@@ -7,6 +7,7 @@
  * - Release vested tokens
  */
 
+import Link from 'next/link'
 import { useAccount } from 'wagmi'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import VestingDashboard from '@/components/VestingDashboard'
@@ -20,6 +21,18 @@ export default function Home() {
         {/* Header */}
         <header className="flex justify-between items-center mb-8">
           <div>
+            <nav className="flex gap-4 mb-4">
+              <span className="text-gray-900 dark:text-white font-semibold">
+                My Vesting
+              </span>
+              <span className="text-gray-400 dark:text-gray-600">|</span>
+              <Link
+                href="/events"
+                className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+              >
+                Activity Dashboard →
+              </Link>
+            </nav>
             <h1 className="text-3xl font-bold mb-2">Token Vesting</h1>
             <p className="text-gray-600 dark:text-gray-400">
               View and manage your vesting schedule

@@ -7,6 +7,7 @@ A simple, clean Next.js frontend for the Token Vesting smart contract. Built for
 - 🔌 **Wallet Connection**: Connect with MetaMask, Coinbase Wallet, or 100+ other wallets via RainbowKit
 - 📊 **Real-time Updates**: Vesting progress updates automatically as time passes
 - 🎯 **Simple Interface**: One-click token release for beneficiaries
+- 📋 **Activity Dashboard**: View recent vesting events with filtering (no wallet required)
 - 📱 **Responsive Design**: Works on desktop and mobile
 - 🌙 **Dark Mode**: Automatic dark/light theme support
 
@@ -65,7 +66,8 @@ npm start
 ```
 frontend/
 ├── components/
-│   └── VestingDashboard.tsx    # Main dashboard component
+│   ├── VestingDashboard.tsx    # Beneficiary vesting dashboard
+│   └── EventsDashboard.tsx     # Activity/events dashboard
 ├── lib/
 │   ├── contracts.ts             # Contract ABIs and addresses
 │   └── wagmi.ts                 # Blockchain configuration
@@ -374,13 +376,28 @@ if (error) {
 }
 ```
 
+## Pages
+
+### / (Home) - Beneficiary Dashboard
+- Connect wallet to view your vesting schedule
+- See real-time progress with countdown timers
+- Release vested tokens with one click
+- View your token balance
+
+### /events - Activity Dashboard
+- View recent vesting activity (last 50 events)
+- Filter by event type (Created, Released, Revoked)
+- See statistics (total schedules, tokens released, etc.)
+- Transaction links to Basescan
+- No wallet connection required (public view)
+
 ## Next Steps
 
-1. **Add owner features**: Create/revoke schedules
-2. **Add analytics**: Charts for vesting progress
+1. **Add owner features**: Create/revoke schedules from UI
+2. **Add analytics**: Charts for vesting progress over time
 3. **Add notifications**: Email alerts when tokens vest
-4. **Add multi-schedule support**: View multiple schedules
-5. **Add transaction history**: Show all releases
+4. **Add multi-schedule support**: View multiple schedules per beneficiary
+5. **Real-time updates**: WebSocket support for live event streaming
 
 See the main [README.md](../README.md) for the smart contract documentation.
 
