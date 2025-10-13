@@ -126,6 +126,9 @@ npx hardhat run scripts/deploy.js
 
 # Deploy to base sepolia
 npx hardhat run scripts/deploy.js --network baseSepolia
+
+# Or use the deploy task (same thing)
+npx hardhat deploy --network baseSepolia
 ```
 
 ### Environment Setup
@@ -142,6 +145,43 @@ ETHERSCAN_API_KEY=your_ETHERSCAN_api_key_here
 - Private key allows programmatic deployment via Hardhat scripts. Needed for Hardhat to sign transactions automatically.
 - Base Sepolia RPC is the URL of the Base Sepolia testnet.
 - API key is used to verify the contract on Etherscan or Basescan
+
+---
+
+## Hardhat Tasks
+
+Custom tasks make common operations easier with simple one-line commands:
+
+```bash
+# List all available tasks
+npx hardhat help
+
+# Mint test tokens
+npx hardhat mint --amount 10000 --network baseSepolia
+
+# Create vesting schedule
+npx hardhat create-schedule \
+  --beneficiary 0x123... \
+  --amount 1000 \
+  --cliff 30 \
+  --duration 365 \
+  --revocable \
+  --network baseSepolia
+
+# Check vesting status
+npx hardhat check-vesting --beneficiary 0x123... --network baseSepolia
+
+# Release vested tokens
+npx hardhat release --beneficiary 0x123... --network baseSepolia
+
+# Revoke schedule (requires --confirm)
+npx hardhat revoke --beneficiary 0x123... --confirm --network baseSepolia
+
+# List all schedules
+npx hardhat list-schedules --network baseSepolia
+```
+
+See [Hardhat Tasks](#hardhat-tasks-reference) section below for complete documentation.
 
 ---
 
@@ -679,6 +719,158 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 - **GitHub**: [@yourusername](https://github.com/yourusername)
 - **Issues**: [GitHub Issues](https://github.com/yourusername/token-vesting-smart-contract/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/yourusername/token-vesting-smart-contract/discussions)
+
+---
+
+## Hardhat Tasks Reference
+
+### mint
+
+Mint test tokens (MockERC20 only - for testing).
+
+```bash
+npx hardhat mint --amount 10000 --network baseSepolia
+
+# Mint to specific address
+npx hardhat mint --amount 5000 --to 0x123... --network baseSepolia
+```
+
+**Parameters**:
+- `--amount`: Amount of tokens to mint (default: 10000)
+- `--to`: Address to mint to (default: your address)
+
+---
+
+### create-schedule
+
+Create a new vesting schedule for a beneficiary.
+
+```bash
+npx hardhat create-schedule \
+  --beneficiary 0x123... \
+  --amount 1000 \
+  --cliff 30 \
+  --duration 365 \
+  --revocable \
+  --network baseSepolia
+```
+
+**Parameters**:
+- `--beneficiary`: Beneficiary address (required)
+- `--amount`: Amount of tokens in whole tokens, e.g., 1000 (required)
+- `--cliff`: Cliff duration in days (default: 30)
+- `--duration`: Total vesting duration in days (default: 365)
+- `--revocable`: Make schedule revocable (flag, optional)
+
+**Example - 4 year vesting with 1 year cliff**:
+```bash
+npx hardhat create-schedule \
+  --beneficiary 0x70997970C51812dc3A010C7d01b50e0d17dc79C8 \
+  --amount 10000 \
+  --cliff 365 \
+  --duration 1460 \
+  --revocable \
+  --network baseSepolia
+```
+
+---
+
+### check-vesting
+
+Check vesting status for a beneficiary with detailed information.
+
+```bash
+npx hardhat check-vesting --beneficiary 0x123... --network baseSepolia
+```
+
+**Parameters**:
+- `--beneficiary`: Beneficiary address (required)
+
+**Output includes**:
+- Total amount, released, vested, available
+- Timeline (start, cliff, end dates)
+- Progress percentage
+- Status (cliff period, vesting, fully vested, revoked)
+- Time until milestones
+
+---
+
+### release
+
+Release vested tokens for a beneficiary.
+
+```bash
+# Release for yourself
+npx hardhat release --network baseSepolia
+
+# Release for specific beneficiary
+npx hardhat release --beneficiary 0x123... --network baseSepolia
+```
+
+**Parameters**:
+- `--beneficiary`: Beneficiary address (default: your address)
+
+**Note**: The signer must be the beneficiary (or have permission).
+
+---
+
+### revoke
+
+Revoke a vesting schedule (if revocable).
+
+```bash
+# Preview revocation (safe, shows what will happen)
+npx hardhat revoke --beneficiary 0x123... --network baseSepolia
+
+# Confirm and execute revocation
+npx hardhat revoke --beneficiary 0x123... --confirm --network baseSepolia
+```
+
+**Parameters**:
+- `--beneficiary`: Beneficiary address (required)
+- `--confirm`: Confirm revocation (required for execution)
+
+**Safety**:
+- Without `--confirm`, only shows what will happen
+- Shows unvested amount that will be refunded
+- Shows vested but unreleased amount (stays with beneficiary)
+- Irreversible once executed
+
+---
+
+### list-schedules
+
+List all vesting schedules by querying blockchain events.
+
+```bash
+# List all schedules
+npx hardhat list-schedules --network baseSepolia
+
+# Limit results
+npx hardhat list-schedules --limit 10 --network baseSepolia
+```
+
+**Parameters**:
+- `--limit`: Maximum number of schedules to show (default: 20)
+
+**Output**:
+- Beneficiary addresses
+- Total amount, vested, released for each
+- Status (Active/Revoked)
+
+---
+
+## Task vs Script Comparison
+
+| Operation | Task (Simple) | Script (Flexible) |
+|-----------|---------------|-------------------|
+| **Create Schedule** | `npx hardhat create-schedule --beneficiary 0x... --amount 1000 --cliff 30 --duration 365 --network baseSepolia` | `npx hardhat run scripts/interact.js --network baseSepolia` (edit script first) |
+| **Check Status** | `npx hardhat check-vesting --beneficiary 0x... --network baseSepolia` | `BENEFICIARY=0x... npx hardhat run scripts/check-vested.js --network baseSepolia` |
+| **Release Tokens** | `npx hardhat release --network baseSepolia` | `npx hardhat run scripts/release-tokens.js --network baseSepolia` |
+| **Mint Tokens** | `npx hardhat mint --amount 5000 --network baseSepolia` | `MINT_AMOUNT=5000 npx hardhat run scripts/mint-tokens.js --network baseSepolia` |
+
+**When to use tasks**: Quick one-off operations, CLI-friendly
+**When to use scripts**: Complex workflows, automation, custom logic
 
 ---
 

@@ -2,6 +2,9 @@ require("@nomicfoundation/hardhat-toolbox");
 require("@nomicfoundation/hardhat-network-helpers");
 require("dotenv/config");
 
+// Import custom tasks
+require("./tasks/vesting-tasks");
+
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
   solidity: {
