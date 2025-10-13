@@ -492,22 +492,115 @@ event VestingRevoked(address indexed beneficiary, uint256 refunded);
 
 ---
 
+## Frontend
+
+### Web Interface
+
+A simple Next.js frontend is provided for beneficiaries to view and interact with their vesting schedules.
+
+**Location**: [`frontend/`](./frontend/)
+
+**Features**:
+- 🔌 Connect wallet (MetaMask, Coinbase Wallet, 100+ others)
+- 📊 View vesting schedule and progress
+- ⏰ Real-time countdown to cliff and vesting completion
+- 🎯 One-click token release
+- 📱 Responsive design (mobile-friendly)
+- 🌙 Dark mode support
+
+#### Quick Start
+
+```bash
+cd frontend
+
+# Install dependencies
+npm install
+
+# Setup environment (get WalletConnect ID from https://cloud.walletconnect.com/)
+cp .env.example .env
+nano .env  # Add your WalletConnect Project ID
+
+# Run development server
+npm run dev
+```
+
+Open http://localhost:3000
+
+#### Technology Stack
+
+- **Next.js 14**: React framework with zero-config setup
+- **wagmi**: React hooks for Ethereum - makes contract calls trivial
+- **RainbowKit**: Beautiful wallet connection UI
+- **Tailwind CSS**: Utility-first styling
+- **TypeScript**: Type safety
+
+#### For Backend Developers
+
+The frontend uses **wagmi hooks** which work like API calls:
+
+```typescript
+// Read contract state (like a GET request)
+const { data: schedule } = useReadContract({
+  address: VESTING_CONTRACT,
+  abi: VESTING_ABI,
+  functionName: 'vestingSchedules',
+  args: [userAddress],
+})
+// schedule auto-updates when blockchain changes!
+
+// Write to contract (like a POST request)
+const { writeContract } = useWriteContract()
+writeContract({
+  address: VESTING_CONTRACT,
+  abi: VESTING_ABI,
+  functionName: 'release',
+})
+```
+
+wagmi automatically handles:
+- Loading states
+- Error handling
+- Transaction signing
+- Real-time updates
+- Caching
+
+See [`frontend/README.md`](./frontend/README.md) for complete documentation.
+
+---
+
 ## Project Structure
 
 ```
 token-vesting-smart-contract/
 ├── contracts/
-│   ├── TokenVesting.sol      # Main vesting contract
-│   └── MockERC20.sol          # Test token
+│   ├── TokenVesting.sol         # Main vesting contract
+│   └── MockERC20.sol            # Test token
 ├── test/
-│   └── TokenVesting.test.js   # Comprehensive test suite
+│   └── TokenVesting.test.js     # Comprehensive test suite
 ├── scripts/
-│   └── deploy.js              # Deployment script
-├── hardhat.config.js          # Hardhat configuration
-├── package.json               # Dependencies
-├── .env.example               # Environment template
-├── README.md                  # This file
-└── LICENSE                    # GPL-3.0 license
+│   ├── deploy.js                # Deployment script
+│   ├── interact.js              # Create vesting schedules
+│   ├── check-vested.js          # Check vesting status
+│   ├── release-tokens.js        # Release vested tokens
+│   ├── revoke.js                # Revoke schedules
+│   ├── demo.js                  # Full lifecycle demo
+│   └── README.md                # Scripts documentation
+├── frontend/                    # Next.js web interface
+│   ├── components/
+│   │   └── VestingDashboard.tsx # Main dashboard component
+│   ├── lib/
+│   │   ├── contracts.ts         # Contract ABIs and addresses
+│   │   └── wagmi.ts             # Blockchain configuration
+│   ├── pages/
+│   │   ├── _app.tsx             # App wrapper with providers
+│   │   └── index.tsx            # Home page
+│   ├── package.json             # Frontend dependencies
+│   └── README.md                # Frontend documentation
+├── hardhat.config.js            # Hardhat configuration
+├── package.json                 # Smart contract dependencies
+├── .env.example                 # Environment template
+├── README.md                    # This file
+└── LICENSE                      # GPL-3.0 license
 ```
 
 ---
@@ -554,8 +647,9 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 ### Phase 2: Enhancement
 - 📋 Multiple schedules per beneficiary
 - 📋 Custom vesting curves
-- 📋 Frontend dashboard
+- ✅ Frontend dashboard
 - 📋 Advanced analytics
+- 📋 Owner dashboard (create/revoke schedules)
 
 ### Phase 3: Integration
 - 📋 Go backend service
