@@ -13,6 +13,8 @@ This directory contains scripts for deploying, interacting with, and demonstrati
 | `release-tokens.js` | Claim vested tokens | Any | Beneficiary |
 | `revoke.js` | Revoke vesting schedule | Any | Contract Owner |
 | `demo.js` | Full lifecycle demo | Localhost/Testnet | Anyone |
+| `monitor-events.js` | Real-time event monitoring | Any | Anyone |
+| `query-events.js` | Historical event queries | Any | Anyone |
 
 ---
 
@@ -256,6 +258,240 @@ npx hardhat run scripts/demo.js --network baseSepolia
 - Demonstrating to stakeholders
 - Learning how vesting works
 
+### 8. monitor-events.js
+
+**Purpose**: Real-time monitoring of vesting contract events as they occur.
+
+**Usage**:
+```bash
+# Monitor events in real-time
+npx hardhat run scripts/monitor-events.js --network baseSepolia
+
+# With verbose output
+MONITOR_VERBOSE=true npx hardhat run scripts/monitor-events.js --network baseSepolia
+
+# Custom poll interval (default 2000ms)
+MONITOR_POLL_INTERVAL=5000 npx hardhat run scripts/monitor-events.js --network baseSepolia
+```
+
+**Environment Variables**:
+- `MONITOR_POLL_INTERVAL`: Polling interval in milliseconds (default: 2000)
+- `MONITOR_VERBOSE`: Show verbose output including block checks (default: false)
+
+**What it displays**:
+- Real-time event stream with color-coded output
+- VestingScheduleCreated events (green)
+- TokensReleased events (yellow)
+- VestingRevoked events (red)
+- Event statistics (schedules created, tokens released, uptime)
+- Transaction links to Basescan
+- Graceful shutdown with Ctrl+C
+
+**Perfect for**:
+- Development and debugging
+- Operational monitoring
+- Integration testing
+- Watching for specific events
+
+**Example Output**:
+```
+════════════════════════════════════════════════════════════
+  📊 TOKEN VESTING EVENT MONITOR
+════════════════════════════════════════════════════════════
+
+Network: baseSepolia
+Started: 2025-10-12 19:30:00
+Press Ctrl+C to stop
+
+────────────────────────────────────────────────────────────
+
+Listening for events...
+
+[19:31:15] VestingScheduleCreated
+  Beneficiary: 0x7099...79C8
+  Amount:      1,000 TEST
+  Start:       2025-10-12 19:31:00
+  Cliff:       2025-11-12 19:31:00 (30d from start)
+  Duration:    1y
+  Block:       12345678
+  Tx:          0xabc123...def456
+  View:        https://sepolia.basescan.org/tx/0xabc123...
+
+[19:45:22] TokensReleased
+  Beneficiary: 0x7099...79C8
+  Amount:      25.5 TEST
+  Block:       12345690
+  Tx:          0xghi789...jkl012
+
+────────────────────────────────────────────────────────────
+📈 Statistics
+────────────────────────────────────────────────────────────
+  Schedules Created:    2
+  Tokens Released:      25.5 TEST
+  Schedules Revoked:    0
+  Uptime:               15m
+────────────────────────────────────────────────────────────
+```
+
+---
+
+### 9. query-events.js
+
+**Purpose**: Query and analyze historical vesting events with powerful filtering and export capabilities.
+
+**Usage**:
+```bash
+# Query all events
+npx hardhat run scripts/query-events.js --network baseSepolia
+
+# Query specific event type
+EVENT_TYPE=VestingScheduleCreated npx hardhat run scripts/query-events.js --network baseSepolia
+
+# Query specific beneficiary
+BENEFICIARY=0x7099...79C8 npx hardhat run scripts/query-events.js --network baseSepolia
+
+# Query date range by block numbers
+FROM_BLOCK=12345000 TO_BLOCK=12346000 npx hardhat run scripts/query-events.js --network baseSepolia
+
+# Limit results
+LIMIT=50 npx hardhat run scripts/query-events.js --network baseSepolia
+
+# Export to CSV
+EXPORT_CSV=true npx hardhat run scripts/query-events.js --network baseSepolia
+
+# Export to JSON
+EXPORT_JSON=true npx hardhat run scripts/query-events.js --network baseSepolia
+
+# Custom output directory
+OUTPUT_DIR=./my-exports EXPORT_CSV=true npx hardhat run scripts/query-events.js --network baseSepolia
+
+# Combine filters
+EVENT_TYPE=TokensReleased BENEFICIARY=0x7099...79C8 LIMIT=10 EXPORT_CSV=true \
+  npx hardhat run scripts/query-events.js --network baseSepolia
+```
+
+**Environment Variables**:
+- `EVENT_TYPE`: Filter by event type (VestingScheduleCreated, TokensReleased, VestingRevoked)
+- `BENEFICIARY`: Filter by beneficiary address
+- `FROM_BLOCK`: Start block number (default: deployment block)
+- `TO_BLOCK`: End block number (default: latest)
+- `LIMIT`: Maximum events to display (default: 100)
+- `EXPORT_CSV`: Export results to CSV file (true/false)
+- `EXPORT_JSON`: Export results to JSON file (true/false)
+- `OUTPUT_DIR`: Output directory for exports (default: ./events-export)
+
+**What it displays**:
+- Filtered event list with full details
+- Block numbers and timestamps
+- Transaction hashes with Basescan links
+- Summary statistics:
+  - Total events by type
+  - Unique beneficiaries
+  - Total tokens vested/released/refunded
+- Color-coded output for readability
+
+**Export Formats**:
+
+**CSV Export** - Great for Excel/spreadsheets:
+```csv
+Event Type,Block Number,Timestamp,Transaction Hash,Beneficiary,Amount (TEST),Additional Data
+VestingScheduleCreated,12345678,2025-10-12 19:31:00,0xabc123...,0x7099...79C8,1000,"Cliff: 2025-11-12, Duration: 1y"
+TokensReleased,12345690,2025-10-12 19:45:00,0xdef456...,0x7099...79C8,25.5,""
+```
+
+**JSON Export** - Great for programmatic analysis:
+```json
+[
+  {
+    "eventType": "VestingScheduleCreated",
+    "blockNumber": 12345678,
+    "blockTimestamp": 1728759060,
+    "transactionHash": "0xabc123...",
+    "args": {
+      "beneficiary": "0x7099...79C8",
+      "amount": "1000000000000000000000",
+      "amountFormatted": "1000",
+      "start": "1728759060",
+      "cliff": "1731351060",
+      "duration": "31536000"
+    }
+  }
+]
+```
+
+**Perfect for**:
+- Historical data analysis
+- Compliance and auditing
+- Generating reports
+- Data export for external systems
+- Investigating specific events
+- Beneficiary activity tracking
+
+**Example Output**:
+```
+══════════════════════════════════════════════════════════════════════
+  🔍 TOKEN VESTING EVENT QUERY TOOL
+══════════════════════════════════════════════════════════════════════
+
+Network: baseSepolia
+Contract: 0x5D6709C5b1ED83125134672AFa905cA045978a1D
+
+Query Filters:
+──────────────────────────────────────────────────────────────────────
+  Event Type: VestingScheduleCreated
+  Beneficiary: All
+  From Block: 12345000
+  To Block: latest
+  Limit: 100
+──────────────────────────────────────────────────────────────────────
+
+Querying events...
+
+✅ Found 15 events
+
+══════════════════════════════════════════════════════════════════════
+  📋 EVENTS
+══════════════════════════════════════════════════════════════════════
+
+[1] VestingScheduleCreated
+  Block:       12345678 (2025-10-12 19:31:00)
+  Tx Hash:     0xabc123...def456
+  Beneficiary: 0x7099797...79C8
+  Amount:      1,000 TEST
+  Start:       2025-10-12 19:31:00
+  Cliff:       2025-11-12 19:31:00 (30d from start)
+  Duration:    1y
+  View:        https://sepolia.basescan.org/tx/0xabc123...
+
+[2] VestingScheduleCreated
+  Block:       12345890 (2025-10-12 20:15:00)
+  Tx Hash:     0xghi789...jkl012
+  Beneficiary: 0x8ABC123...DEF456
+  Amount:      5,000 TEST
+  Start:       2025-10-12 20:15:00
+  Cliff:       2025-11-12 20:15:00 (30d from start)
+  Duration:    2y
+  View:        https://sepolia.basescan.org/tx/0xghi789...
+
+══════════════════════════════════════════════════════════════════════
+  📊 SUMMARY
+══════════════════════════════════════════════════════════════════════
+
+Total Events:            15
+  Schedules Created:     15
+  Tokens Released:       0
+  Schedules Revoked:     0
+
+Unique Beneficiaries:    12
+Total Tokens Vested:     125,000 TEST
+Total Tokens Released:   0 TEST
+Total Refunded:          0 TEST
+
+══════════════════════════════════════════════════════════════════════
+
+✅ CSV exported to: ./events-export/vesting-events-baseSepolia-2025-10-12T19-30-00.csv
+```
+
 ---
 
 ## Common Workflows
@@ -309,6 +545,52 @@ npx hardhat node
 
 # Terminal 2: Run comprehensive demo
 npx hardhat run scripts/demo.js --network localhost
+```
+
+### Event Monitoring Workflow
+
+```bash
+# Terminal 1: Monitor events in real-time
+npx hardhat run scripts/monitor-events.js --network baseSepolia
+
+# Terminal 2: Perform actions (create schedules, release tokens, etc.)
+npx hardhat run scripts/interact.js --network baseSepolia
+
+# Events appear immediately in Terminal 1!
+```
+
+### Event Analysis Workflow
+
+```bash
+# 1. Query all recent events
+npx hardhat run scripts/query-events.js --network baseSepolia
+
+# 2. Query specific beneficiary activity
+BENEFICIARY=0xYourAddress npx hardhat run scripts/query-events.js --network baseSepolia
+
+# 3. Export for analysis
+EXPORT_CSV=true EXPORT_JSON=true npx hardhat run scripts/query-events.js --network baseSepolia
+
+# 4. Analyze in Excel or custom tools
+open events-export/vesting-events-baseSepolia-*.csv
+```
+
+### Compliance/Audit Workflow
+
+```bash
+# 1. Export all historical events
+FROM_BLOCK=0 EXPORT_CSV=true EXPORT_JSON=true \
+  npx hardhat run scripts/query-events.js --network baseSepolia
+
+# 2. Generate beneficiary-specific reports
+for addr in "${beneficiaries[@]}"; do
+  BENEFICIARY=$addr EXPORT_CSV=true \
+    npx hardhat run scripts/query-events.js --network baseSepolia
+done
+
+# 3. Archive exports
+mkdir -p audit-reports/$(date +%Y-%m-%d)
+mv events-export/* audit-reports/$(date +%Y-%m-%d)/
 ```
 
 ---
