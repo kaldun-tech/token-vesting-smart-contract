@@ -263,13 +263,103 @@ pm2 start npm --name "vesting-frontend" -- start
 
 ## Troubleshooting
 
-### "NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID is not set"
+### Error: "NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID is not set"
 
-**Solution**: Create a `.env` file with your WalletConnect Project ID:
+**Problem**: Missing `.env` file or missing environment variable.
+
+**Solution**:
 ```bash
+# 1. Create .env file from template
 cp .env.example .env
-# Edit .env and add your project ID
+
+# 2. Edit .env and add your WalletConnect Project ID
+nano .env
+
+# 3. Get a free Project ID from https://cloud.walletconnect.com/
+
+# 4. Your .env should look like:
+# NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=abc123def456...
+# NEXT_PUBLIC_TOKEN_ADDRESS=0x751f3c0aF0Ed18d9F70108CD0c4d878Aa0De59A8
+# NEXT_PUBLIC_VESTING_ADDRESS=0xb682eb7BA41859Ed9f21EC95f44385a8967A16b5
+
+# 5. Restart dev server
+npm run dev
 ```
+
+**Quick Fix (Testing Only)**: I've added a demo WalletConnect ID to your `.env` file. You should get your own for production from https://cloud.walletconnect.com/
+
+### Error: "ERR_REQUIRE_ESM: require() of ES Module ... not supported"
+
+**Problem**: WalletConnect/Reown SDK uses ESM modules that don't work well with Node.js 18.
+
+**This is a CRITICAL error** that prevents wallet connection from working.
+
+**Solution 1: Upgrade Node.js (RECOMMENDED)**
+```bash
+# Check your Node version
+node --version
+
+# If version < 20, upgrade Node.js:
+# Download from: https://nodejs.org/
+# Install Node.js 20 LTS or higher
+# Restart terminal
+
+# Then reinstall dependencies
+cd frontend
+rm -rf node_modules package-lock.json
+npm install --legacy-peer-deps
+npm run dev
+```
+
+**Solution 2: Use Compatible Versions (Already Applied)**
+
+I've updated `package.json` to use versions compatible with Node 18:
+- `@rainbow-me/rainbowkit`: `^2.0.0` (downgraded from 2.1.0)
+- `viem`: `2.7.15` (pinned version)
+- `wagmi`: `^2.5.7`
+
+Run the fix script:
+```bash
+cd frontend
+./fix-esm.sh
+```
+
+Or manually:
+```bash
+cd frontend
+rm -rf node_modules package-lock.json .next
+npm install --legacy-peer-deps
+npm run dev
+```
+
+**Why this happens**:
+- WalletConnect v3 (Reown) switched to ESM modules
+- Node.js 18 has limited ESM support in `require()` statements
+- Node.js 20+ has full ESM support and handles this properly
+
+**See also**: `FIX_ESM_ERROR.md` for detailed troubleshooting.
+
+---
+
+### Warning: "Module not found: @react-native-async-storage/async-storage"
+
+**Problem**: MetaMask SDK includes React Native dependencies that aren't needed for web.
+
+**Status**: ⚠️ This is a warning, not an error. Your app will work fine!
+
+**What I did**: Updated `next.config.js` to suppress these warnings:
+```javascript
+config.resolve.fallback = {
+  '@react-native-async-storage/async-storage': false,
+};
+config.ignoreWarnings = [
+  { module: /node_modules\/@metamask\/sdk/ },
+];
+```
+
+**Why this happens**: MetaMask SDK is designed for both React Native (mobile) and web. Next.js sees the React Native imports and warns about missing dependencies, but they're not actually used in web browsers.
+
+**If warnings persist**: Restart your dev server (`npm run dev`).
 
 ### Wallet won't connect
 
@@ -278,20 +368,73 @@ cp .env.example .env
 - RPC: https://sepolia.base.org
 - Chain ID: 84532
 
+**Steps to add Base Sepolia to MetaMask**:
+1. Open MetaMask
+2. Click network dropdown → "Add Network"
+3. Enter the details above
+4. Save and switch to Base Sepolia
+
 ### Contract data not showing
 
 **Solution**:
 1. Check contract addresses in `.env` are correct
-2. Make sure you're connected to the right network
+2. Make sure you're connected to the right network (Base Sepolia)
 3. Verify your wallet address has a vesting schedule
 
-### Build errors
+**Debug checklist**:
+```bash
+# 1. Check .env file exists and has correct addresses
+cat .env
+
+# 2. Verify contract exists on Base Sepolia
+# Visit: https://sepolia.basescan.org/address/0xb682eb7BA41859Ed9f21EC95f44385a8967A16b5
+
+# 3. Check browser console for errors (F12 → Console tab)
+```
+
+### Build errors / Dependency issues
 
 **Solution**: Delete cache and reinstall:
 ```bash
-rm -rf node_modules .next
-npm install
+rm -rf node_modules .next package-lock.json
+npm install --legacy-peer-deps
 npm run dev
+```
+
+**Why `--legacy-peer-deps`?**: RainbowKit and wagmi have peer dependency version conflicts. This flag tells npm to install anyway (it's safe for this project).
+
+### Port 3000 already in use
+
+**Solution**:
+```bash
+# Option 1: Stop the process using port 3000
+lsof -ti:3000 | xargs kill -9
+
+# Option 2: Use a different port
+PORT=3001 npm run dev
+```
+
+### "Ready in 42s" - Slow startup
+
+**Why**: First run compiles all dependencies. Subsequent runs are much faster (~5s).
+
+**To speed up**:
+1. Ensure you have Node.js 20+ (`node --version`)
+2. Use SSD storage (not HDD)
+3. Close other heavy applications
+
+### Changes not reflecting in browser
+
+**Solution**:
+```bash
+# 1. Hard refresh browser (Ctrl+Shift+R or Cmd+Shift+R)
+
+# 2. Clear Next.js cache
+rm -rf .next
+npm run dev
+
+# 3. Check you're editing the right file
+# If in VSCode, right-click file → "Reveal in File Explorer"
 ```
 
 ## Technology Stack

@@ -671,6 +671,9 @@ npx hardhat check-vesting \
 
 ### Web Dashboard (Frontend)
 
+![Frontend Vesting Schedule](docs/images/FrontendVestingSchedule.png)
+![Frontend Tokens Released](docs/images/FrontendVestingReleased.png)
+
 The project includes a Next.js web interface for end-users to interact with their vesting schedules.
 
 **Features:**
@@ -681,12 +684,23 @@ The project includes a Next.js web interface for end-users to interact with thei
 - 📱 Responsive design (mobile and desktop)
 - 🌙 Dark mode support
 
-**Try it:**
+**Quick Start:**
 ```bash
+# Option 1: Run from project root (recommended)
+npm run frontend:install  # One-time setup
+npm run frontend:dev      # Start dev server
+
+# Option 2: Run from frontend directory
 cd frontend
 npm install --legacy-peer-deps
 npm run dev
 ```
+
+**Available frontend commands from root:**
+- `npm run frontend:install` - Install frontend dependencies
+- `npm run frontend:dev` - Start development server
+- `npm run frontend:build` - Build for production
+- `npm run frontend:start` - Start production server
 
 See [`frontend/README.md`](./frontend/README.md) for complete documentation.
 
@@ -810,18 +824,21 @@ A simple Next.js frontend is provided for beneficiaries to view and interact wit
 #### Quick Start
 
 ```bash
+# Option 1: Run from project root (recommended)
+npm run frontend:install    # Install dependencies
+cd frontend && cp .env.example .env && cd ..  # Setup environment
+nano frontend/.env          # Add your WalletConnect Project ID
+npm run frontend:dev        # Start dev server
+
+# Option 2: Traditional approach
 cd frontend
-
-# Install dependencies
 npm install
-
-# Setup environment (get WalletConnect ID from https://cloud.walletconnect.com/)
 cp .env.example .env
 nano .env  # Add your WalletConnect Project ID
-
-# Run development server
 npm run dev
 ```
+
+**Get WalletConnect Project ID**: https://cloud.walletconnect.com/
 
 Open http://localhost:3000
 
