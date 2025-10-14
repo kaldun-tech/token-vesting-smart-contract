@@ -12,7 +12,11 @@
     "clean": "hardhat clean",
     "deploy:local": "hardhat run scripts/deploy.js",
     "deploy:sepolia": "hardhat run scripts/deploy.js --network baseSepolia",
-    "coverage": "hardhat coverage"
+    "coverage": "hardhat coverage",
+    "frontend:dev": "npm --prefix frontend run dev",
+    "frontend:build": "npm --prefix frontend run build",
+    "frontend:start": "npm --prefix frontend run start",
+    "frontend:install": "npm --prefix frontend install --legacy-peer-deps"
   },
   "keywords": [
     "vesting",
