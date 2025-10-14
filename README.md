@@ -17,6 +17,7 @@ A production-ready Solidity smart contract for time-locked token vesting schedul
   - [Running Tests](#running-tests)
   - [Static Analysis with Slither](#static-analysis-with-slither)
 - [Deployment](#deployment)
+  - [Visual Demo](#visual-demo)
 - [Security](#security)
 - [Documentation](#documentation)
 - [Contributing](#contributing)
@@ -527,14 +528,169 @@ npx hardhat verify --network baseSepolia VESTING_ADDRESS "TOKEN_ADDRESS"
 
 #### Base Sepolia Testnet
 
-- **MockERC20 Token**: `0x495D01f0Ec6E7701A6Ecc04045E4bB59F027e1E0`
-- **TokenVesting Contract**: `0x5D6709C5b1ED83125134672AFa905cA045978a1D`
+- **MockERC20 Token**: `0x751f3c0aF0Ed18d9F70108CD0c4d878Aa0De59A8`
+- **TokenVesting Contract**: `0xb682eb7BA41859Ed9f21EC95f44385a8967A16b5`
 - **Deployer**: `0xF25DA65784D566fFCC60A1f113650afB688A14ED`
-- **Deployment Date**: October 11, 2025
+- **Deployment Date**: October 12, 2025
 
 View on Basescan:
-- Token: [View Verified Contract](https://sepolia.basescan.org/address/0x495D01f0Ec6E7701A6Ecc04045E4bB59F027e1E0#code)
-- Vesting: [View Verified Contract](https://sepolia.basescan.org/address/0x5D6709C5b1ED83125134672AFa905cA045978a1D#code)
+- Token: [View Verified Contract](https://sepolia.basescan.org/address/0x751f3c0aF0Ed18d9F70108CD0c4d878Aa0De59A8#code)
+- Vesting: [View Verified Contract](https://sepolia.basescan.org/address/0xb682eb7BA41859Ed9f21EC95f44385a8967A16b5#code)
+
+**Example Transaction**:
+- [Creating Vesting Schedule](https://sepolia.basescan.org/tx/0xaa3db601992d8755ee3ccc08e23016abe1f1411e3a05602f3b3db8940c0a0522) - View decoded events and contract interaction
+
+---
+
+## Visual Demo
+
+### 📸 Complete Workflow Screenshots
+
+This section demonstrates the complete token vesting workflow from deployment to monitoring, showcasing real transactions on Base Sepolia testnet.
+
+---
+
+#### 1. Verified Smart Contract on BaseScan
+
+![Verified Contract](docs/images/BaseScanContract.png)
+
+The TokenVesting contract deployed and verified on Base Sepolia testnet.
+
+**Key Details Visible:**
+- ✅ **Contract source code verified** (exact match)
+- ✅ **Contract name**: `TokenVesting`
+- ✅ **Compiler version**: v0.8.20+commit.a1b79de6
+- ✅ **Optimization**: Enabled with 200 runs
+- ✅ **Contract creator**: Deployer address visible
+- 📍 **Live Contract**: [View on BaseScan](https://sepolia.basescan.org/address/0xb682eb7BA41859Ed9f21EC95f44385a8967A16b5#code)
+
+**Why This Matters:**
+- Source code verification allows anyone to audit the contract
+- Publicly visible code builds trust with users and investors
+- BaseScan provides a user-friendly interface to interact with the contract
+
+---
+
+#### 2. Minting Test Tokens
+
+![Tokens Minted](docs/images/BaseScanTokensMinted.png)
+
+Transaction showing 5,000 TEST tokens minted for demonstration purposes.
+
+**Transaction Details:**
+- ✅ **Status**: Success
+- 📤 **Action**: Transfer 5,000 TEST to deployer address
+- 🪙 **Token**: ERC-20 Test Token (TEST)
+- ⛽ **Gas cost**: 0.000004454544050655 ETH (~$0.008 on Base Sepolia L2)
+- 🔗 **Block**: 32311088, confirmed by Sequencer
+- ⏱️ **Timestamp**: Oct-13-2025 09:21:04 PM +UTC
+
+**Why This Matters:**
+- Demonstrates the token contract working correctly
+- Shows minimal gas fees on Base L2 compared to Ethereum mainnet
+- Proves successful ERC-20 token minting functionality
+
+---
+
+#### 3. Creating Vesting Schedule & Token Transfer
+
+![Vesting Schedule Created](docs/images/BaseScanTestTransfer.png)
+
+Transaction transferring 1,000 TEST tokens to the vesting contract to create a vesting schedule.
+
+**Transaction Details:**
+- ✅ **Status**: Success
+- 📤 **From**: Deployer (`0xF25DA65784D566fFCC60A1f113650afB688A14ED`)
+- 📥 **To**: TokenVesting Contract (`0xb682eb7BA41859Ed9f21EC95f44385a8967A16b5`)
+- 🪙 **Amount**: 1,000 TEST tokens
+- ⛽ **Gas cost**: 0.000004454544050655 ETH (~$0.008)
+- 🔗 **Block**: 32311185, confirmed by Sequencer
+
+**What This Shows:**
+- ✅ ERC-20 tokens successfully locked in vesting contract
+- 🔍 Full transparency - all parameters visible on blockchain
+- ⛽ Extremely low gas fees on Base L2 network
+- 📝 Transaction includes `VestingScheduleCreated` event emission
+
+**Pro Tip:** Click the "Logs (2)" tab on BaseScan to see:
+- Decoded `VestingScheduleCreated` event with beneficiary, amount, cliff, and duration parameters
+- ERC-20 `Transfer` event showing tokens moved from owner to vesting contract
+
+---
+
+#### 4. CLI Vesting Status Check
+
+![CLI Output](docs/images/VestingStatus.png)
+
+Using the custom Hardhat task to check vesting status directly from the command line.
+
+**Command Used:**
+```bash
+npx hardhat check-vesting \
+  --beneficiary 0xF25DA65784D566fFCC60A1f113650afB688A14ED \
+  --network baseSepolia
+```
+
+**Information Displayed:**
+- 📋 **Schedule Details**:
+  - Total Amount: 1,000.0 tokens
+  - Released: 0.0 tokens
+  - Vested: 0.0 tokens (still in cliff period)
+  - Available: 0.0 tokens (nothing to claim yet)
+
+- 📅 **Timeline**:
+  - Start: 10/13/2025, 3:24:18 PM
+  - Cliff: 10/14/2025, 3:24:18 PM (1 day cliff period)
+  - End: 11/12/2025, 2:24:18 PM (30 day total vesting)
+  - Current: 10/13/2025, 3:24:59 PM
+
+- 📊 **Progress**:
+  - Vesting Progress: 0.00%
+  - Status: ⏳ **CLIFF PERIOD**
+  - Time until cliff: 23h 59m
+
+- 🔐 **Revocation Settings**:
+  - Revocable: true
+  - Revoked: false
+
+**Why This Is Useful:**
+- 🎯 Professional developer experience with formatted output
+- 📊 Real-time vesting progress tracking
+- ⏰ Clear countdown timers for important milestones
+- 🚦 Status indicators (⏳ cliff, 🔄 vesting, ✅ complete)
+- 💻 No need to manually query the contract or decode blockchain data
+
+**Developer Experience Highlights:**
+- One-line command to check any beneficiary's status
+- Human-readable dates and amounts
+- Progress visualization
+- Clear status messaging
+- Useful for debugging and monitoring
+
+---
+
+### Web Dashboard (Frontend)
+
+The project includes a Next.js web interface for end-users to interact with their vesting schedules.
+
+**Features:**
+- 🔌 One-click wallet connection (100+ wallets via RainbowKit)
+- 📊 Real-time vesting progress with visual progress bars
+- ⏰ Countdown timers until cliff and full vesting
+- 🎯 Simple "Release Tokens" button for claiming
+- 📱 Responsive design (mobile and desktop)
+- 🌙 Dark mode support
+
+**Try it:**
+```bash
+cd frontend
+npm install --legacy-peer-deps
+npm run dev
+```
+
+See [`frontend/README.md`](./frontend/README.md) for complete documentation.
+
+---
 
 ### Gas Costs
 
