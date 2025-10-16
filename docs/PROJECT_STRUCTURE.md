@@ -12,32 +12,51 @@ token-vesting-smart-contract/
 │   ├── TokenVesting.sol   # Main vesting contract
 │   └── MockERC20.sol      # Test token
 │
-├── scripts/               # Hardhat deployment scripts
+├── scripts/               # Hardhat deployment and utility scripts
 │   ├── deploy.js          # Deploy contracts
 │   ├── interact.js        # Create vesting schedules
-│   └── ...
+│   ├── check-vested.js    # Check vested amount for address
+│   ├── demo.js            # Full demo workflow
+│   ├── mint-tokens.js     # Mint test tokens
+│   ├── monitor-events.js  # Real-time event monitoring
+│   ├── query-events.js    # Query historical events
+│   ├── release-tokens.js  # Release vested tokens
+│   ├── revoke.js          # Revoke vesting schedule
+│   └── README.md          # Script documentation
 │
 ├── test/                  # Hardhat test suite
 │   └── TokenVesting.test.js
 │
 ├── tasks/                 # Custom Hardhat tasks
-│   ├── mint.js            # Mint tokens
-│   ├── create-schedule.js # Create vesting schedule
-│   └── ...
+│   └── vesting-tasks.js   # All Hardhat CLI tasks (mint, create, release, etc.)
 │
-├── frontend/             # Next.js web application
-│   ├── components/       # React components
-│   ├── lib/              # Contract ABIs and config
-│   ├── pages/            # Next.js pages
-│   └── package.json      # Frontend dependencies (separate)
+├── frontend/              # Next.js web application
+│   ├── components/        # React components
+│   ├── lib/               # Contract ABIs and config
+│   ├── pages/             # Next.js pages
+│   ├── styles/            # CSS and Tailwind styles
+│   ├── package.json       # Frontend dependencies (separate)
+│   ├── next.config.js     # Next.js configuration
+│   ├── tsconfig.json      # TypeScript configuration
+│   ├── setup.sh           # Frontend setup script
+│   ├── fix-esm.sh         # ESM compatibility fix
+│   └── README.md          # Frontend documentation
 │
-├── docs/                    # Documentation
-│   ├── images/              # Screenshots
-│   └── PROJECT_STRUCTURE.md # This file
+├── docs/                  # Documentation
+│   ├── images/            # Screenshots
+│   └── project_structure.md # This file
+│
+├── .github/               # GitHub configuration
+│   └── workflows/         # CI/CD workflows
 │
 ├── package.json           # Root package (Hardhat dependencies)
 ├── hardhat.config.js      # Hardhat configuration
-└── .env                   # Environment variables
+├── .env                   # Environment variables (not committed)
+├── .env.example           # Example environment variables
+├── CLAUDE.md              # Comprehensive technical documentation
+├── README.md              # Main project documentation
+├── PROJECT_SUMMARY.md     # Project overview
+└── ENHANCEMENT_GUIDE.md   # Guide for future enhancements
 ```
 
 ## Why This Structure?
@@ -261,4 +280,4 @@ Requires: `npm install --save-dev concurrently`
 
 ---
 
-**Last Updated**: October 14, 2025
+**Last Updated**: October 16, 2025
