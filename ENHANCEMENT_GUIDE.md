@@ -50,7 +50,7 @@ This document outlines what makes this project portfolio-ready and what could be
 
 **Why it matters**: Shows you understand the full user flow, not just deployment.
 
-### 2. Add Screenshots/Visual Demo (15 minutes)
+### 2. Add Screenshots/Visual Demo (15 minutes) - COMPLETE
 - Screenshot of Basescan verified contract
 - Screenshot of successful transaction
 - Screenshot of frontend dashboard
@@ -58,7 +58,7 @@ This document outlines what makes this project portfolio-ready and what could be
 
 **Why it matters**: Visual proof is powerful for recruiters who aren't technical.
 
-**Status**: ⏳ PENDING - Quick 15-minute task, high impact
+**Status**: ✅ COMPLETE - Screenshots added to README.md
 
 ### 3. ✅ Create a Simple Frontend (4-8 hours) ⭐ HIGH IMPACT - COMPLETE
 ~~Even a basic React/Next.js frontend that connects wallet and shows vesting~~
@@ -122,9 +122,9 @@ npx hardhat release --network baseSepolia
 **Why it matters**: Shows CLI tooling skills and developer experience thinking.
 
 ### 7. Integration Tests with Mainnet Fork (2-3 hours)
-Test your contracts against real mainnet state:
+Create a test for your contracts against real mainnet state:
 ```javascript
-// test/integration/mainnet-fork.test.js
+test/integration/mainnet-fork.test.js
 ```
 
 **Why it matters**: Shows production-readiness awareness.

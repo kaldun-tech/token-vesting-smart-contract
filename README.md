@@ -620,9 +620,13 @@ Transaction transferring 1,000 TEST tokens to the vesting contract to create a v
 
 #### 4. CLI Vesting Status Check
 
-![CLI Output](docs/images/VestingStatus.png)
+Initial vesting status:
+![CLI Output](docs/images/VestingStatus_10-14-25.png)
 
-Using the custom Hardhat task to check vesting status directly from the command line.
+After 24 hours:
+![CLI Output](docs/images/VestingStatus_10-16-25.png)
+
+Use the custom Hardhat task to check vesting status directly from the command line.
 
 **Command Used:**
 ```bash
