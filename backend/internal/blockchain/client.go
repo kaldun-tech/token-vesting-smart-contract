@@ -5,14 +5,15 @@ import (
 	"fmt"
 	"log"
 	"math/big"
+	"strings"
 
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/yourusername/token-vesting-backend/internal/config"
-	"github.com/yourusername/token-vesting-backend/pkg/contracts"
+	"github.com/kaldun-tech/token-vesting-backend/internal/config"
+	"github.com/kaldun-tech/token-vesting-backend/pkg/contracts"
 )
 
 type Client struct {
@@ -150,7 +151,7 @@ func (c *Client) GetLatestBlockNumber(ctx context.Context) (uint64, error) {
 // parseEvent parses a log event into our ContractEvent struct
 func (c *Client) parseEvent(vLog types.Log) (*ContractEvent, error) {
 	// Parse based on topic (event signature)
-	contractAbi, err := abi.JSON(contracts.TokenVestingMetaData.ABI)
+	contractAbi, err := abi.JSON(strings.NewReader(contracts.TokenVestingMetaData.ABI))
 	if err != nil {
 		return nil, err
 	}

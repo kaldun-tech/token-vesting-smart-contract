@@ -8,10 +8,10 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/yourusername/token-vesting-backend/internal/api"
-	"github.com/yourusername/token-vesting-backend/internal/blockchain"
-	"github.com/yourusername/token-vesting-backend/internal/config"
-	"github.com/yourusername/token-vesting-backend/internal/database"
+	"github.com/kaldun-tech/token-vesting-backend/internal/api"
+	"github.com/kaldun-tech/token-vesting-backend/internal/blockchain"
+	"github.com/kaldun-tech/token-vesting-backend/internal/config"
+	"github.com/kaldun-tech/token-vesting-backend/internal/database"
 )
 
 func main() {

@@ -404,7 +404,7 @@ token-vesting-smart-contract/
 
 ## 📞 Contact & Links
 
-- **GitHub**: [@yourusername](https://github.com/yourusername)
+- **GitHub**: [@kaldun-tech](https://github.com/kaldun-tech)
 - **LinkedIn**: [Your Profile]
 - **Portfolio**: [Your Website]
 - **Email**: your.email@example.com

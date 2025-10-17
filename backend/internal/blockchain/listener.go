@@ -5,8 +5,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/yourusername/token-vesting-backend/internal/database"
-	"github.com/yourusername/token-vesting-backend/internal/models"
+	"github.com/kaldun-tech/token-vesting-backend/internal/database"
+	"github.com/kaldun-tech/token-vesting-backend/internal/models"
 )
 
 type EventListener struct {

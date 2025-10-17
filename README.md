@@ -112,7 +112,7 @@ You can verify which network you're on by checking:
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/token-vesting-smart-contract.git
+git clone https://github.com/kaldun-tech/token-vesting-smart-contract.git
 cd token-vesting-smart-contract
 
 # Install dependencies
@@ -996,9 +996,9 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 
 ## Contact
 
-- **GitHub**: [@yourusername](https://github.com/yourusername)
-- **Issues**: [GitHub Issues](https://github.com/yourusername/token-vesting-smart-contract/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/token-vesting-smart-contract/discussions)
+- **GitHub**: [@yourusername](https://github.com/kaldun-tech)
+- **Issues**: [GitHub Issues](https://github.com/kaldun-tech/token-vesting-smart-contract/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/kaldun-tech/token-vesting-smart-contract/discussions)
 
 ---
 

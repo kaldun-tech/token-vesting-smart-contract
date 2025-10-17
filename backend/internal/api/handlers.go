@@ -6,8 +6,8 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/gin-gonic/gin"
-	"github.com/yourusername/token-vesting-backend/internal/blockchain"
-	"github.com/yourusername/token-vesting-backend/internal/database"
+	"github.com/kaldun-tech/token-vesting-backend/internal/blockchain"
+	"github.com/kaldun-tech/token-vesting-backend/internal/database"
 )
 
 type Handler struct {

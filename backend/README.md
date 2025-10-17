@@ -442,7 +442,7 @@ MIT License - see LICENSE file
 
 ## Support
 
-- GitHub Issues: [Report bugs](https://github.com/yourusername/token-vesting/issues)
+- GitHub Issues: [Report bugs](https://github.com/kaldun-tech/token-vesting/issues)
 - Documentation: See `/docs` directory
 - Discord: [Join our community](#)
 

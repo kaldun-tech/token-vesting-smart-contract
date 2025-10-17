@@ -1,4 +1,4 @@
-module github.com/yourusername/token-vesting-backend
+module github.com/kaldun-tech/token-vesting-backend
 
 go 1.24.0
 
