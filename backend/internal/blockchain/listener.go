@@ -2,6 +2,7 @@ package blockchain
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
@@ -73,6 +74,17 @@ func (el *EventListener) syncHistoricalEvents(ctx context.Context, startBlock ui
 
 	log.Printf("📊 Fetching events from block %d to %d", startBlock, latestBlock)
 
+	// Fetch and process historical events in batches
+	if err := el.fetchAndProcessHistoricalEvents(ctx, startBlock, latestBlock); err != nil {
+		log.Printf("❌ Failed to fetch and process historical events: %v", err)
+	}
+
+	log.Println("✅ Historical sync complete")
+	return nil
+}
+
+// fetchAndProcessHistoricalEvents fetches and processes historical events in batches
+func (el *EventListener) fetchAndProcessHistoricalEvents(ctx context.Context, startBlock, latestBlock uint64) error {
 	// Fetch in batches to avoid RPC limits
 	batchSize := uint64(10000)
 	for from := startBlock; from < latestBlock; from += batchSize {
@@ -83,20 +95,18 @@ func (el *EventListener) syncHistoricalEvents(ctx context.Context, startBlock ui
 
 		events, err := el.client.FetchHistoricalEvents(ctx, from, to)
 		if err != nil {
-			log.Printf("❌ Failed to fetch events from %d to %d: %v", from, to, err)
-			continue
+			return fmt.Errorf("failed to fetch events from %d to %d: %v", from, to, err)
 		}
 
 		for _, event := range events {
 			if err := el.handleEvent(event); err != nil {
-				log.Printf("❌ Failed to handle event: %v", err)
+				return fmt.Errorf("failed to handle event: %v", err)
 			}
 		}
 
 		log.Printf("✅ Processed blocks %d to %d (%d events)", from, to, len(events))
 	}
 
-	log.Println("✅ Historical sync complete")
 	return nil
 }
 

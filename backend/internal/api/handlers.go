@@ -10,6 +10,8 @@ import (
 	"github.com/kaldun-tech/token-vesting-backend/internal/database"
 )
 
+const ERR_INVALID_ETH_ADDRESS = "Invalid Ethereum address"
+
 type Handler struct {
 	db         *database.Database
 	blockchain *blockchain.Client
@@ -28,7 +30,7 @@ func (h *Handler) GetSchedule(c *gin.Context) {
 	address := c.Param("address")
 
 	if !common.IsHexAddress(address) {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Ethereum address"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": ERR_INVALID_ETH_ADDRESS})
 		return
 	}
 
@@ -72,7 +74,7 @@ func (h *Handler) GetVestedAmount(c *gin.Context) {
 	address := c.Param("address")
 
 	if !common.IsHexAddress(address) {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Ethereum address"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": ERR_INVALID_ETH_ADDRESS})
 		return
 	}
 
@@ -91,11 +93,11 @@ func (h *Handler) GetVestedAmount(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"beneficiary":    address,
-		"vested_amount":  vestedAmount.String(),
-		"total_amount":   schedule.Amount,
-		"released":       schedule.Released,
-		"unreleased":     vestedAmount.String(), // vested - released
+		"beneficiary":   address,
+		"vested_amount": vestedAmount.String(),
+		"total_amount":  schedule.Amount,
+		"released":      schedule.Released,
+		"unreleased":    vestedAmount.String(), // vested - released
 	})
 }
 
@@ -107,7 +109,7 @@ func (h *Handler) GetEvents(c *gin.Context) {
 	offset, _ := strconv.Atoi(c.DefaultQuery("offset", "0"))
 
 	if !common.IsHexAddress(address) {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Ethereum address"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": ERR_INVALID_ETH_ADDRESS})
 		return
 	}
 
@@ -133,7 +135,7 @@ func (h *Handler) GetEvents(c *gin.Context) {
 // GET /health
 func (h *Handler) HealthCheck(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
-		"status": "ok",
+		"status":  "ok",
 		"service": "token-vesting-api",
 	})
 }
@@ -150,7 +152,7 @@ func (h *Handler) GetStats(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"total_schedules": len(schedules),
+		"total_schedules":  len(schedules),
 		"active_schedules": len(schedules), // Count non-revoked
 	})
 }
