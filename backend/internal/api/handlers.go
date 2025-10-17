@@ -8,12 +8,20 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/kaldun-tech/token-vesting-backend/internal/blockchain"
 	"github.com/kaldun-tech/token-vesting-backend/internal/database"
+	"github.com/kaldun-tech/token-vesting-backend/internal/models"
 )
 
 const ERR_INVALID_ETH_ADDRESS = "Invalid Ethereum address"
 
+// DatabaseInterface defines the methods needed from the database
+type DatabaseInterface interface {
+	GetScheduleByBeneficiary(address string) (*models.VestingSchedule, error)
+	GetEventsByBeneficiary(address string, limit, offset int) ([]models.VestingEvent, error)
+	GetAllSchedules(limit, offset int) ([]models.VestingSchedule, error)
+}
+
 type Handler struct {
-	db         *database.Database
+	db         DatabaseInterface
 	blockchain *blockchain.Client
 }
 
@@ -29,13 +37,17 @@ func NewHandler(db *database.Database, bc *blockchain.Client) *Handler {
 func (h *Handler) GetSchedule(c *gin.Context) {
 	address := c.Param("address")
 
+	// Validate address format and normalize to checksummed format
 	if !common.IsHexAddress(address) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": ERR_INVALID_ETH_ADDRESS})
 		return
 	}
 
+	// Normalize address to checksummed format
+	normalizedAddress := common.HexToAddress(address).Hex()
+
 	// Get from database
-	schedule, err := h.db.GetScheduleByBeneficiary(address)
+	schedule, err := h.db.GetScheduleByBeneficiary(normalizedAddress)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Schedule not found"})
 		return
@@ -73,27 +85,31 @@ func (h *Handler) GetAllSchedules(c *gin.Context) {
 func (h *Handler) GetVestedAmount(c *gin.Context) {
 	address := c.Param("address")
 
+	// Validate address format
 	if !common.IsHexAddress(address) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": ERR_INVALID_ETH_ADDRESS})
 		return
 	}
 
+	// Normalize address
+	normalizedAddress := common.HexToAddress(address)
+
 	// Get from blockchain
-	vestedAmount, err := h.blockchain.GetVestedAmount(common.HexToAddress(address))
+	vestedAmount, err := h.blockchain.GetVestedAmount(normalizedAddress)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get vested amount"})
 		return
 	}
 
 	// Also get schedule from database
-	schedule, err := h.db.GetScheduleByBeneficiary(address)
+	schedule, err := h.db.GetScheduleByBeneficiary(normalizedAddress.Hex())
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Schedule not found"})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"beneficiary":   address,
+		"beneficiary":   normalizedAddress.Hex(),
 		"vested_amount": vestedAmount.String(),
 		"total_amount":  schedule.Amount,
 		"released":      schedule.Released,
@@ -108,16 +124,20 @@ func (h *Handler) GetEvents(c *gin.Context) {
 	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "100"))
 	offset, _ := strconv.Atoi(c.DefaultQuery("offset", "0"))
 
+	// Validate address format
 	if !common.IsHexAddress(address) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": ERR_INVALID_ETH_ADDRESS})
 		return
 	}
 
+	// Normalize address
+	normalizedAddress := common.HexToAddress(address).Hex()
+
 	if limit > 1000 {
 		limit = 1000
 	}
 
-	events, err := h.db.GetEventsByBeneficiary(address, limit, offset)
+	events, err := h.db.GetEventsByBeneficiary(normalizedAddress, limit, offset)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve events"})
 		return

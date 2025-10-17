@@ -153,7 +153,7 @@ GET /api/v1/schedules?limit=100&offset=0
   "schedules": [
     {
       "id": 1,
-      "beneficiary": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
+      "beneficiary": "0xF25DA65784D566fFCC60A1f113650afB688A14ED",
       "start": "2024-01-01T00:00:00Z",
       "cliff": "2025-01-01T00:00:00Z",
       "duration": 126144000,
@@ -179,14 +179,15 @@ GET /api/v1/schedules/:address
 
 **Example**:
 ```bash
-curl http://localhost:8080/api/v1/schedules/0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+# Replace with your actual beneficiary address (must be 42 characters with 0x prefix)
+curl http://localhost:8080/api/v1/schedules/0xF25DA65784D566fFCC60A1f113650afB688A14ED
 ```
 
 **Response**:
 ```json
 {
   "id": 1,
-  "beneficiary": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
+  "beneficiary": "0xF25DA65784D566fFCC60A1f113650afB688A14ED",
   "start": "2024-01-01T00:00:00Z",
   "cliff": "2025-01-01T00:00:00Z",
   "duration": 126144000,
@@ -210,7 +211,7 @@ Queries the blockchain directly for current vested amount.
 **Response**:
 ```json
 {
-  "beneficiary": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
+  "beneficiary": "0xF25DA65784D566fFCC60A1f113650afB688A14ED",
   "vested_amount": "500000000000000000000",
   "total_amount": "1000000000000000000000",
   "released": "250000000000000000000",
@@ -231,7 +232,7 @@ GET /api/v1/events/:address?limit=50&offset=0
     {
       "id": 1,
       "event_type": "VestingScheduleCreated",
-      "beneficiary": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
+      "beneficiary": "0xF25DA65784D566fFCC60A1f113650afB688A14ED",
       "amount": "1000000000000000000000",
       "block_number": 15123456,
       "transaction_hash": "0xabc...",
@@ -241,7 +242,7 @@ GET /api/v1/events/:address?limit=50&offset=0
     {
       "id": 2,
       "event_type": "TokensReleased",
-      "beneficiary": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
+      "beneficiary": "0xF25DA65784D566fFCC60A1f113650afB688A14ED",
       "amount": "250000000000000000000",
       "block_number": 15234567,
       "transaction_hash": "0xdef...",
@@ -314,8 +315,42 @@ The API tracks three types of blockchain events:
 ### Running Tests
 
 ```bash
+# Run all tests
 go test ./...
+
+# Run with verbose output
+go test ./... -v
+
+# Run tests with coverage
+go test ./... -cover
+
+# Run only API tests
+go test ./internal/api/... -v
 ```
+
+**Test Results**:
+```
+=== RUN   TestGetSchedule_InvalidAddress
+--- PASS: TestGetSchedule_InvalidAddress (0.00s)
+=== RUN   TestGetSchedule_ValidAddress
+--- PASS: TestGetSchedule_ValidAddress (0.00s)
+=== RUN   TestGetVestedAmount_AddressValidation
+--- PASS: TestGetVestedAmount_AddressValidation (0.00s)
+=== RUN   TestGetEvents_AddressValidation
+--- PASS: TestGetEvents_AddressValidation (0.00s)
+=== RUN   TestHealthCheck
+--- PASS: TestHealthCheck (0.00s)
+PASS
+ok  	github.com/kaldun-tech/token-vesting-backend/internal/api	0.024s
+```
+
+**Testing Address Validation**:
+
+The API validates Ethereum addresses and returns appropriate errors:
+- ✅ Valid: `0xF25DA65784D566fFCC60A1f113650afB688A14ED` (42 chars, 0x prefix)
+- ❌ Invalid: `0x742d35Cc6634C0532925a3b844Bc9e7595f0bE` (too short - 41 chars)
+- ❌ Invalid: `0xZZZZZ...` (invalid hex characters)
+- ⚠️ Accepted but normalized: `F25DA65784D566fFCC60A1f113650afB688A14ED` (no 0x prefix)
 
 ### Code Formatting
 
@@ -404,6 +439,50 @@ curl -X POST https://sepolia.base.org \
 - Check `START_BLOCK` is set to contract deployment block
 - Verify contract address is correct
 - Check RPC rate limits (use Alchemy/Infura for production)
+
+### Empty Database (No Schedules Found)
+
+If the API returns empty schedules but blockchain has data:
+
+**Symptoms**:
+```bash
+curl http://localhost:8080/api/v1/schedules
+{"count":0,"limit":100,"offset":0,"schedules":[]}
+```
+
+**Diagnosis**:
+```bash
+# 1. Check if backend is syncing events (look for logs)
+# 2. Verify blockchain has data
+npx hardhat check-vesting --beneficiary YOUR_ADDRESS --network baseSepolia
+
+# 3. Check database connection
+psql -U postgres -d vesting -c "SELECT COUNT(*) FROM vesting_schedules;"
+```
+
+**Solution**:
+- Backend automatically syncs historical events on startup
+- Wait a few minutes for sync to complete (depends on START_BLOCK)
+- Check backend logs for sync progress: `✅ Processed blocks X to Y`
+- If no logs appear, restart backend with correct START_BLOCK
+
+### Address Validation Errors
+
+**Error**: `{"error":"Invalid Ethereum address"}`
+
+**Common Causes**:
+1. **Too short**: `0x742d35Cc6634C0532925a3b844Bc9e7595f0bE` (41 chars instead of 42)
+   - **Fix**: Ensure address is exactly 42 characters (40 hex + `0x`)
+2. **Invalid characters**: `0xZZZZZZZ...`
+   - **Fix**: Only use hex characters (0-9, a-f, A-F)
+3. **Missing last character**: Copy-paste error
+   - **Fix**: Verify full address from Basescan or wallet
+
+**Test your address**:
+```bash
+# Should return schedule or "Schedule not found" (not "Invalid Ethereum address")
+curl http://localhost:8080/api/v1/schedules/0xF25DA65784D566fFCC60A1f113650afB688A14ED
+```
 
 ## Performance Tuning
 

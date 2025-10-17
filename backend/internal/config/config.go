@@ -16,12 +16,12 @@ type Config struct {
 	DatabaseURL string
 
 	// Blockchain configuration
-	EthereumRPC           string
-	TokenVestingAddress   string
-	TokenAddress          string
-	ChainID               int64
-	PrivateKey            string // Optional: for admin operations
-	StartBlock            uint64 // Block to start event syncing from
+	EthereumRPC         string
+	TokenVestingAddress string
+	TokenAddress        string
+	ChainID             int64
+	PrivateKey          string // Optional: for admin operations
+	StartBlock          uint64 // Block to start event syncing from
 
 	// Application configuration
 	Environment string
