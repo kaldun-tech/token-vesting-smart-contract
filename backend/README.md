@@ -129,6 +129,11 @@ Server will start on `http://localhost:8080`
 GET /health
 ```
 
+**Example**:
+```bash
+curl http://localhost:8080/health
+```
+
 **Response**:
 ```json
 {
@@ -141,6 +146,11 @@ GET /health
 
 ```http
 GET /api/v1/schedules?limit=100&offset=0
+```
+
+**Example**:
+```bash
+curl http://localhost:8080/api/v1/schedules?limit=100&offset=0
 ```
 
 **Query Parameters**:
@@ -314,35 +324,62 @@ The API tracks three types of blockchain events:
 
 ### Running Tests
 
+The project has comprehensive test coverage with **21+ passing tests**.
+
+**Quick Start**:
 ```bash
-# Run all tests
-go test ./...
+# Run all tests with the test script
+./test.sh
 
 # Run with verbose output
+./test.sh -v
+
+# Run with coverage
+./test.sh -c
+
+# Run integration tests only
+./test.sh -i -v
+
+# Or use go test directly
+go test ./...
 go test ./... -v
-
-# Run tests with coverage
 go test ./... -cover
-
-# Run only API tests
-go test ./internal/api/... -v
 ```
 
-**Test Results**:
+**Test Coverage**:
+| Package | Coverage | Tests |
+|---------|----------|-------|
+| `internal/api` | **30.8%** | 5 unit tests |
+| `internal/database` | **73.0%** | 8 database tests |
+| `test/integration` | N/A | 10 test suites (24+ tests) |
+
+**Test Types**:
+1. **Unit Tests** (`internal/api/handlers_test.go`) - API validation logic
+2. **Database Tests** (`internal/database/database_test.go`) - CRUD operations
+3. **Integration Tests** (`test/integration/api_test.go`) - End-to-end API tests
+
+**Example Output**:
+```bash
+$ ./test.sh
+=== Token Vesting Backend Test Suite ===
+
+Running all tests...
+
+ok      github.com/kaldun-tech/token-vesting-backend/internal/api       (cached)
+ok      github.com/kaldun-tech/token-vesting-backend/internal/database  0.051s
+ok      github.com/kaldun-tech/token-vesting-backend/test/integration   0.095s
+
+✅ All tests passed!
+
+Test Summary:
+  • Unit Tests: 5 tests (API handlers)
+  • Database Tests: 8 tests (CRUD operations)
+  • Integration Tests: 10 test suites (24+ tests)
+
+  Coverage: API 30.8% | Database 73.0%
 ```
-=== RUN   TestGetSchedule_InvalidAddress
---- PASS: TestGetSchedule_InvalidAddress (0.00s)
-=== RUN   TestGetSchedule_ValidAddress
---- PASS: TestGetSchedule_ValidAddress (0.00s)
-=== RUN   TestGetVestedAmount_AddressValidation
---- PASS: TestGetVestedAmount_AddressValidation (0.00s)
-=== RUN   TestGetEvents_AddressValidation
---- PASS: TestGetEvents_AddressValidation (0.00s)
-=== RUN   TestHealthCheck
---- PASS: TestHealthCheck (0.00s)
-PASS
-ok  	github.com/kaldun-tech/token-vesting-backend/internal/api	0.024s
-```
+
+For detailed testing documentation, see [TESTING.md](TESTING.md).
 
 **Testing Address Validation**:
 

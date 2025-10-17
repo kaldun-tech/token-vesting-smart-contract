@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"math/big"
 	"time"
 
 	"github.com/kaldun-tech/token-vesting-backend/internal/database"
@@ -162,11 +163,26 @@ func (el *EventListener) handleEvent(event *ContractEvent) error {
 func (el *EventListener) handleScheduleCreated(event *ContractEvent) error {
 	data := event.Data
 
+	// Parse strings to int64
+	startStr := data["start"].(string)
+	cliffStr := data["cliff"].(string)
+	durationStr := data["duration"].(string)
+
+	// Convert to big.Int then to int64
+	startBig := new(big.Int)
+	startBig.SetString(startStr, 10)
+
+	cliffBig := new(big.Int)
+	cliffBig.SetString(cliffStr, 10)
+
+	durationBig := new(big.Int)
+	durationBig.SetString(durationStr, 10)
+
 	schedule := &models.VestingSchedule{
 		Beneficiary: event.Beneficiary,
-		Start:       time.Unix(int64(data["start"].(uint64)), 0),
-		Cliff:       time.Unix(int64(data["cliff"].(uint64)), 0),
-		Duration:    int64(data["duration"].(uint64)),
+		Start:       time.Unix(startBig.Int64(), 0),
+		Cliff:       time.Unix(cliffBig.Int64(), 0),
+		Duration:    durationBig.Int64(),
 		Amount:      event.Amount,
 		Released:    "0",
 		Revocable:   true, // Default, should be from event data
