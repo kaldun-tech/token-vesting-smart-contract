@@ -36,6 +36,7 @@ export default function EventsDashboard() {
   // Load events on mount
   useEffect(() => {
     loadEvents()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Update stats when events change
@@ -46,11 +47,11 @@ export default function EventsDashboard() {
       schedulesRevoked: 0,
     }
 
-    events.forEach(event => {
+    for (const event of events) {
       if (event.eventName === 'VestingScheduleCreated') newStats.schedulesCreated++
       if (event.eventName === 'TokensReleased') newStats.tokensReleased++
       if (event.eventName === 'VestingRevoked') newStats.schedulesRevoked++
-    })
+    }
 
     setStats(newStats)
   }, [events])

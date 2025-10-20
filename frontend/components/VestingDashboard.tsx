@@ -86,7 +86,7 @@ export default function VestingDashboard() {
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
         <h2 className="text-xl font-semibold mb-4">No Vesting Schedule</h2>
         <p className="text-gray-600 dark:text-gray-400">
-          You don't have an active vesting schedule on this network.
+          You don&apos;t have an active vesting schedule on this network.
         </p>
       </div>
     )
@@ -271,7 +271,7 @@ export default function VestingDashboard() {
         <ul className="text-sm text-blue-800 dark:text-blue-400 space-y-1">
           <li>• Tokens vest linearly over the vesting period</li>
           <li>• No tokens are available during the cliff period</li>
-          <li>• Click "Release" to claim your vested tokens anytime</li>
+          <li>• Click &quot;Release&quot; to claim your vested tokens anytime</li>
           <li>• Released tokens are transferred to your wallet</li>
         </ul>
       </div>

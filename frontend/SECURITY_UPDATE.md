@@ -1,19 +1,31 @@
-# Frontend Security Update Guide
+# Frontend Security & Dependency Update Guide
 
-## Current Security Issues
-
-### Critical Issues: 0 ✅
-All critical vulnerabilities have been fixed!
-
-### High Issues: 0 ✅
-No high-severity vulnerabilities.
-
-### Low Issues: 19 ⚠️
-WalletConnect/Reown dependencies have prototype pollution in `fast-redact`.
+**TL;DR**: Run `npm install --legacy-peer-deps` in the `frontend/` directory to fix all issues.
 
 ---
 
-## Quick Fix (Recommended)
+## Current Status
+
+### Security Vulnerabilities
+
+| Severity | Count | Status |
+|----------|-------|--------|
+| **Critical** | 0 | ✅ Fixed |
+| **High** | 0 | ✅ None |
+| **Medium** | 0 | ✅ None |
+| **Low** | ~19 | ⚠️ Acceptable (WalletConnect) |
+
+### Linting & Build
+
+| Check | Status |
+|-------|--------|
+| **TypeScript** | ✅ Passes |
+| **ESLint** | ✅ Passes |
+| **Production Build** | ✅ Works |
+
+---
+
+## Quick Fix (2 Steps)
 
 ### Step 1: Update Dependencies (Fixes Critical Vulnerabilities)
 
@@ -327,5 +339,48 @@ https://github.com/kaldun-tech/token-vesting-smart-contract/issues
 
 ---
 
+---
+
+## Quick Reference
+
+### One-Line Fix
+
+```bash
+cd frontend && rm -rf node_modules package-lock.json && npm install --legacy-peer-deps
+```
+
+### Verify All Checks Pass
+
+```bash
+cd frontend
+npm audit --audit-level=critical  # Should show: 0 vulnerabilities
+npx tsc --noEmit                  # Should show: no errors
+npm run lint                      # Should show: no errors
+npm run build                     # Should show: ✓ Compiled successfully
+```
+
+### Common Issues
+
+**Issue**: "Cannot find module"
+- **Solution**: Run `npm install --legacy-peer-deps`
+
+**Issue**: ESLint errors about "Unknown options"
+- **Solution**: Delete `node_modules` and reinstall
+- **Why**: You have old ESLint 9.x installed, need ESLint 8.x
+
+**Issue**: Still seeing security warnings
+- **Solution**: Run `npm audit` to see details
+- **Note**: Low-severity WalletConnect issues are acceptable
+
+**Issue**: Build takes forever
+- **Solution**: First build takes 30-60s, subsequent builds are ~5s
+- **Why**: Next.js compiles everything on first build
+
+**Issue**: "ENOENT: no such file or directory"
+- **Solution**: Make sure you're in the `frontend/` directory
+- **Check**: `pwd` should end with `/frontend`
+
+---
+
 **Last Updated**: 2025-10-20
-**Next Review**: 2025-11-20
+**Next Review**: 2025-11-20 (monthly)
