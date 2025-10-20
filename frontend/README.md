@@ -15,7 +15,7 @@ A simple, clean Next.js frontend for the Token Vesting smart contract. Built for
 
 ### 1. Get a WalletConnect Project ID
 
-1. Go to https://cloud.walletconnect.com/
+1. Go to https://dashboard.reown.com/
 2. Sign up for a free account
 3. Create a new project
 4. Copy your Project ID
