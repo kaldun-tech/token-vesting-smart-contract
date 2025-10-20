@@ -374,45 +374,23 @@ token-vesting-smart-contract/
 - [x] Security considerations documented
 - [x] Project structure clear
 - [x] GitHub repo made public (if applicable)
-- [ ] Added to resume/portfolio
-- [ ] LinkedIn post (optional)
-- [ ] Blog post (optional)
-
----
-
-## 🚀 Next Steps (Optional Enhancements)
-
-### Quick Wins (1-2 hours each)
-1. Add screenshots to README
-2. Create video walkthrough
-3. Add GitHub topics/tags
-4. Write LinkedIn post
-
-### Medium Projects (4-8 hours)
-1. Simple frontend (React + WagmiKit)
-2. The Graph subgraph for event indexing
-3. Medium blog post/article
-4. Additional Hardhat tasks
-
-### Large Projects (1-2 weeks)
-1. Full frontend dashboard
-2. Go backend service
-3. PostgreSQL caching layer
-4. Mobile app support
+- [x] Added to resume/portfolio
+- [x] LinkedIn post (optional)
+- [x] Blog post (optional)
 
 ---
 
 ## 📞 Contact & Links
 
 - **GitHub**: [@kaldun-tech](https://github.com/kaldun-tech)
-- **LinkedIn**: [Your Profile]
-- **Portfolio**: [Your Website]
-- **Email**: your.email@example.com
+- **LinkedIn**: [My Profile](https://www.linkedin.com/in/taras-smereka/)
+- **Portfolio**: [My Website](https://kalduntech.com/)
+- **Email**: taras@kalduntech.com
+- **Calendly**: [Schedule a meeting](https://calendly.com/kaldun/meeting)
 
 ---
 
-**Status**: ✅ Portfolio-Ready
-**Last Updated**: October 11, 2025
+**Last Updated**: October 20, 2025
 **Version**: 1.0.0
 
 ---

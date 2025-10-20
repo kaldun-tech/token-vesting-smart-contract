@@ -227,6 +227,43 @@ export default function OwnerDashboard() {
 }
 ```
 
+## Testing & CI/CD
+
+### Automated Checks
+
+The project has comprehensive CI/CD configured that automatically runs on every push and pull request:
+
+**Frontend checks that run automatically**:
+- ✅ TypeScript type checking (`npx tsc --noEmit`)
+- ✅ ESLint linting (`npm run lint`)
+- ✅ Production build verification (`npm run build`)
+
+**Also runs**:
+- ✅ Smart contract tests and Slither analysis
+- ✅ Backend tests and linting (Go)
+
+See [CI/CD Documentation](../.github/workflows/README.md) for details.
+
+### Local Testing Before Push
+
+Always run checks locally before pushing:
+
+```bash
+# TypeScript check
+npx tsc --noEmit
+
+# Linting
+npm run lint
+
+# Production build test
+npm run build
+
+# Or all at once
+npx tsc --noEmit && npm run lint && npm run build
+```
+
+This ensures your code passes CI/CD before pushing.
+
 ## Deployment
 
 ### Deploy to Vercel (Recommended)
@@ -234,7 +271,11 @@ export default function OwnerDashboard() {
 1. Push your code to GitHub
 2. Go to https://vercel.com
 3. Import your repository
-4. Add environment variables in Vercel dashboard
+4. Add environment variables in Vercel dashboard:
+   - `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID`
+   - `NEXT_PUBLIC_TOKEN_ADDRESS`
+   - `NEXT_PUBLIC_VESTING_ADDRESS`
+   - `NEXT_PUBLIC_CHAIN_ID`
 5. Deploy!
 
 Vercel automatically:

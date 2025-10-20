@@ -5,6 +5,7 @@ A production-ready Solidity smart contract for time-locked token vesting schedul
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Solidity](https://img.shields.io/badge/Solidity-0.8.20-363636?logo=solidity)](https://soliditylang.org/)
 [![Hardhat](https://img.shields.io/badge/Built%20with-Hardhat-yellow)](https://hardhat.org/)
+[![CI](https://github.com/kaldun-tech/token-vesting-smart-contract/actions/workflows/ci.yml/badge.svg)](https://github.com/kaldun-tech/token-vesting-smart-contract/actions/workflows/ci.yml)
 
 ## Table of Contents
 
@@ -403,7 +404,19 @@ Our test suite covers:
 
 [Slither](https://github.com/crytic/slither) is a Solidity static analysis framework that detects vulnerabilities and code quality issues.
 
-#### Setup
+#### Automated Analysis (Recommended)
+
+Slither runs automatically on every push via GitHub Actions (`.github/workflows/ci.yml`). Check the Actions tab in your repository to see results.
+
+**CI/CD automatically runs**:
+- Smart contract tests and coverage
+- Slither security analysis
+- Backend tests (Go)
+- Frontend linting and builds
+
+See [CI/CD Documentation](./.github/workflows/README.md) for details.
+
+#### Manual Local Analysis
 
 ```bash
 # Create Python virtual environment (one-time setup)
@@ -419,7 +432,7 @@ pip install slither-analyzer
 pip install solc-select
 ```
 
-#### Running Slither
+#### Running Slither Locally
 
 ```bash
 # Activate venv first
@@ -450,10 +463,6 @@ python -m slither . --exclude naming-convention,solc-version
 # Check only high/medium severity issues
 python -m slither . --exclude-low --exclude-informational
 ```
-
-#### Automated Analysis
-
-Slither runs automatically on every push via GitHub Actions (`.github/workflows/slither.yml`). Check the Actions tab in your repository to see results.
 
 #### Troubleshooting
 
@@ -941,7 +950,20 @@ Contributions are welcome! Please follow these steps:
 - Follow Solidity style guide
 - Add inline documentation
 - Update README as needed
-- Run `npx hardhat test` before submitting PR
+- Run tests locally before submitting PR:
+  ```bash
+  # Smart contracts
+  npx hardhat test
+  npx hardhat coverage
+
+  # Backend (if modified)
+  cd backend && make test && make lint
+
+  # Frontend (if modified)
+  cd frontend && npm run lint && npm run build
+  ```
+- All PRs automatically run CI/CD checks (see Actions tab)
+- Ensure CI/CD passes before requesting review
 
 ---
 

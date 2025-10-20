@@ -192,33 +192,39 @@ Integration tests use these addresses:
 
 ## Continuous Integration
 
-### GitHub Actions (Recommended)
+### GitHub Actions (✅ Already Configured)
 
-Create `.github/workflows/test.yml`:
+The project has comprehensive CI/CD configured in `.github/workflows/ci.yml` that automatically runs on every push and pull request.
 
-```yaml
-name: Tests
+**What runs automatically**:
+- ✅ Backend unit tests
+- ✅ Backend integration tests (with PostgreSQL service)
+- ✅ Backend linting (golangci-lint)
+- ✅ Backend formatting checks (gofmt)
+- ✅ Backend coverage report generation
+- ✅ Smart contract tests and Slither analysis
+- ✅ Frontend TypeScript, linting, and builds
 
-on: [push, pull_request]
+**View results**: Check the **Actions** tab in GitHub to see test results for each commit and PR.
 
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v4
-        with:
-          go-version: '1.21'
+**Status badge**: See README.md for the CI status badge.
 
-      - name: Install dependencies
-        run: go mod download
+### Local Testing Before Push
 
-      - name: Run tests
-        run: go test ./... -v -cover
+Always run tests locally before pushing:
 
-      - name: Run integration tests
-        run: go test ./test/integration/... -v
+```bash
+# Quick test (all tests)
+make test
+
+# Comprehensive check (tests + linting + formatting)
+make test && make lint && make fmt
+
+# Or use the test script
+./test.sh -v -c  # Verbose with coverage
 ```
+
+This ensures your code passes CI/CD before pushing.
 
 ## Writing New Tests
 
