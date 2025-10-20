@@ -1,0 +1,255 @@
+# golangci-lint configuration for Token Vesting Backend
+# See: https://golangci-lint.run/usage/configuration/
+
+# Options for analysis running
+run:
+  # Timeout for analysis
+  timeout: 5m
+
+  # Include test files
+  tests: true
+
+  # Allow parallel runners
+  allow-parallel-runners: true
+
+  # Go version to target
+  go: '1.24'
+
+# Output configuration
+output:
+  # Colored output
+  formats:
+    - format: colored-line-number
+
+  # Print lines of code with issue
+  print-issued-lines: true
+
+  # Print linter name in issue line
+  print-linter-name: true
+
+  # Sort results by: filepath, line, and column
+  sort-results: true
+
+# Linters configuration
+linters:
+  # Enable specific linters
+  enable:
+    # Default linters (recommended)
+    - errcheck      # Check for unchecked errors
+    - gosimple      # Simplify code
+    - govet         # Vet examines Go source code
+    - ineffassign   # Detect ineffectual assignments
+    - staticcheck   # Static analysis
+    - unused        # Check for unused code
+
+    # Additional recommended linters
+    - gofmt         # Check code formatting
+    - goimports     # Check import formatting
+    - misspell      # Spell checker
+    - revive        # Fast, configurable, extensible linter
+    - bodyclose     # Check HTTP response body closed
+    - gocritic      # Opinionated linter
+    - gosec         # Security issues
+    - unconvert     # Remove unnecessary type conversions
+    - unparam       # Unused function parameters
+    - prealloc      # Preallocate slices
+    - copyloopvar   # Check for pointers to loop variables (replaces exportloopref)
+    - nolintlint    # Ensure nolint directives are explained
+
+  # Disable these linters
+  disable:
+    - typecheck     # Can conflict with go build
+
+  # Run only fast linters from enabled linters set
+  fast: false
+
+# Linters settings
+linters-settings:
+  # errcheck: check for unchecked errors
+  errcheck:
+    # Report assignment of errors to blank identifier
+    check-blank: true
+    # Check type assertions
+    check-type-assertions: true
+    # Exclude functions by signature
+    exclude-functions:
+      - io/ioutil.ReadFile
+      - io.Copy(*bytes.Buffer)
+      - io.Copy(os.Stdout)
+
+  # govet: vet examines Go source code
+  govet:
+    # Enable all analyzers
+    enable-all: true
+    # Disable specific analyzers
+    disable:
+      - shadow  # Reports variables that shadow other variables (too noisy)
+      - fieldalignment  # Detects structs that could be rearranged (optimization, not critical)
+
+  # gofmt: check if code is formatted
+  gofmt:
+    # Simplify code
+    simplify: true
+
+  # goimports: check if imports are formatted
+  goimports:
+    # Put local imports after 3rd-party packages
+    local-prefixes: github.com/kaldun-tech/token-vesting-backend
+
+  # misspell: spell checker
+  misspell:
+    # Correct spellings using locale
+    locale: US
+    # Ignore specific words
+    ignore-words:
+      - beneficiary  # Domain-specific term
+
+  # revive: fast, configurable linter
+  revive:
+    # Increase confidence to reduce false positives
+    confidence: 0.8
+    rules:
+      # Enable specific rules
+      - name: blank-imports
+      - name: context-as-argument
+      - name: context-keys-type
+      - name: dot-imports
+      - name: error-return
+      - name: error-strings
+      - name: error-naming
+      - name: exported
+      - name: if-return
+      - name: increment-decrement
+      - name: var-naming
+      - name: var-declaration
+      - name: package-comments
+      - name: range
+      - name: receiver-naming
+      - name: time-naming
+      - name: unexported-return
+      - name: indent-error-flow
+      - name: errorf
+      - name: empty-block
+      - name: superfluous-else
+      - name: unused-parameter
+      - name: unreachable-code
+      - name: redefines-builtin-id
+
+      # Disable some overly strict rules
+      - name: line-length-limit
+        disabled: true
+      - name: function-length
+        disabled: true
+      - name: max-public-structs
+        disabled: true
+      - name: cognitive-complexity
+        disabled: true
+
+  # gosec: security linter
+  gosec:
+    # Include test files
+    tests: true
+    # Severity level
+    severity: medium
+    # Confidence level
+    confidence: medium
+    # Exclude specific rules
+    excludes:
+      - G104  # Unhandled errors (covered by errcheck)
+      - G304  # File path from variable (we validate Ethereum addresses)
+
+  # gocritic: opinionated linter
+  gocritic:
+    # Enable multiple checks by tags
+    enabled-tags:
+      - diagnostic
+      - style
+      - performance
+    disabled-checks:
+      - hugeParam        # Can be noisy for blockchain structs
+      - rangeValCopy     # Can be noisy for blockchain structs
+      - unnamedResult    # We allow unnamed results for simple functions
+
+  # prealloc: preallocate slices
+  prealloc:
+    # Report preallocation suggestions only on simple loops
+    simple: true
+    range-loops: true
+    for-loops: false
+
+  # unparam: unused function parameters
+  unparam:
+    # Check exported functions
+    check-exported: false
+
+# Issues configuration
+issues:
+  # Maximum issues count per one linter
+  max-issues-per-linter: 0
+
+  # Maximum count of issues with the same text
+  max-same-issues: 0
+
+  # Show only new issues
+  new: false
+
+  # Exclude specific issue patterns
+  exclude-rules:
+    # Exclude some linters from running on tests files
+    - path: _test\.go
+      linters:
+        - gosec        # Security is less critical in tests
+        - gocritic     # Can be noisy in test code
+        - errcheck     # Tests often intentionally ignore errors
+        - unparam      # Test helpers often have unused params
+
+    # Exclude specific messages
+    - text: "weak cryptographic primitive"
+      linters:
+        - gosec
+      # We're using Ethereum's crypto, which is secure
+
+    # Exclude TODO/FIXME comments from revive
+    - text: "comment on exported"
+      linters:
+        - revive
+      path: _test\.go
+
+    # Exclude magic number checks for test files
+    - text: "mnd: Magic number"
+      path: _test\.go
+
+    # Exclude line length for generated code
+    - path: ".*\\.pb\\.go$"
+      linters:
+        - all
+
+  # Independently of option `exclude` we use default exclude patterns
+  exclude-use-default: true
+
+  # Fix found issues (if supported by linter)
+  fix: false
+
+# Severity configuration
+severity:
+  # Default severity for issues
+  default-severity: warning
+
+  # Severity rules
+  rules:
+    - linters:
+        - errcheck
+        - gosec
+        - govet
+      severity: error
+
+    - linters:
+        - revive
+        - gocritic
+      severity: warning
+
+    - linters:
+        - misspell
+        - gofmt
+        - goimports
+      severity: info
