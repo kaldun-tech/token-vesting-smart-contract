@@ -15,7 +15,7 @@ WalletConnect/Reown dependencies have prototype pollution in `fast-redact`.
 
 ## Quick Fix (Recommended)
 
-### Step 1: Update Next.js (Fixes Critical Vulnerabilities)
+### Step 1: Update Dependencies (Fixes Critical Vulnerabilities)
 
 ```bash
 cd frontend
@@ -23,12 +23,17 @@ cd frontend
 # Remove old dependencies
 rm -rf node_modules package-lock.json
 
-# Install with updated Next.js
+# Install with updated versions
 npm install --legacy-peer-deps
 
 # Verify no critical issues
 npm audit --audit-level=critical
 ```
+
+**What was updated**:
+- `next`: 14.1.0 → **14.2.33** (fixes critical vulnerabilities)
+- `eslint`: 9.38.0 → **^8** (compatibility with Next.js 14.2.33)
+- `eslint-config-next`: 15.5.6 → **14.2.33** (matches Next.js version)
 
 **Expected Result**: ✅ 0 critical vulnerabilities
 

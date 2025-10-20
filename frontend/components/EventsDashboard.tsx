@@ -88,9 +88,9 @@ export default function EventsDashboard() {
 
       // Combine and format events
       const allEvents: VestingEvent[] = [
-        ...createdEvents.map(e => ({ ...e, eventName: 'VestingScheduleCreated' })),
-        ...releasedEvents.map(e => ({ ...e, eventName: 'TokensReleased' })),
-        ...revokedEvents.map(e => ({ ...e, eventName: 'VestingRevoked' })),
+        ...createdEvents.map(e => ({ ...e, eventName: 'VestingScheduleCreated', args: (e as any).args })),
+        ...releasedEvents.map(e => ({ ...e, eventName: 'TokensReleased', args: (e as any).args })),
+        ...revokedEvents.map(e => ({ ...e, eventName: 'VestingRevoked', args: (e as any).args })),
       ]
 
       // Sort by block number (newest first)
