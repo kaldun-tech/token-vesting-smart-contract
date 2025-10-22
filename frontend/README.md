@@ -2,6 +2,12 @@
 
 A simple, clean Next.js frontend for the Token Vesting smart contract. Built for backend developers who want a functional UI without complexity.
 
+## 🚀 Live Demo
+
+**Frontend**: https://token-vesting-smart-contract.vercel.app/
+
+Try it now on **Base Sepolia testnet** - connect your wallet and view your vesting schedule!
+
 ## Features
 
 - 🔌 **Wallet Connection**: Connect with MetaMask, Coinbase Wallet, or 100+ other wallets via RainbowKit
@@ -266,31 +272,57 @@ This ensures your code passes CI/CD before pushing.
 
 ## Deployment
 
-### Deploy to Vercel (Recommended)
+### Deploy to Vercel (Recommended) ⭐
 
 1. Push your code to GitHub
 2. Go to https://vercel.com
 3. Import your repository
-4. Add environment variables in Vercel dashboard:
+4. Select **Next.js** as the framework preset
+5. Set root directory to `./frontend`
+6. Add environment variables in Vercel dashboard:
    - `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID`
    - `NEXT_PUBLIC_TOKEN_ADDRESS`
    - `NEXT_PUBLIC_VESTING_ADDRESS`
    - `NEXT_PUBLIC_CHAIN_ID`
-5. Deploy!
+7. Deploy!
 
 Vercel automatically:
-- Builds your Next.js app
+- Builds your Next.js app optimally
 - Sets up SSL
 - Provides a custom domain
 - Auto-deploys on git push
+- Handles edge case optimizations
 
-### Deploy to Netlify
+#### Why Vercel Over Alternatives?
 
-```bash
-npm run build
+**Vercel vs. Netlify**:
 
-# Upload the 'out' folder to Netlify
-```
+| Aspect | Vercel | Netlify |
+|--------|--------|---------|
+| **Next.js Native Support** | ✅ Built-in, optimized | ⚠️ Works, less seamless |
+| **Build Speed** | ⚠️ Slightly faster | ✅ Good |
+| **Edge Functions** | ✅ Excellent | ⚠️ Good |
+| **Deploy Speed** | ✅ Faster | ⚠️ Slightly slower |
+| **Environment Variables** | ✅ Upload `.env` file | ⚠️ Manual entry only |
+| **Free Tier** | ✅ Generous | ✅ Generous |
+| **Cost at Scale** | ~$20/month | ~$19/month |
+
+**Why we chose Vercel**:
+1. **Native Next.js Support**: Created by the same team behind Next.js, so optimizations are built-in
+2. **Better DX**: Zero-configuration for monorepos with the `./frontend` root directory
+3. **Environment File Upload**: Vercel lets you upload a `.env` file directly (no manual entry)
+4. **Performance**: Next.js-specific optimizations like image optimization and ISR (Incremental Static Regeneration)
+5. **Redundancy Not Needed**: The blockchain is the source of truth, not the frontend. Deploying to multiple platforms adds complexity without real benefit
+
+**Setting Environment Variables on Vercel**:
+- **Easy Method**: Upload your `.env` file in Vercel dashboard → Project Settings → Environment Variables → Import `.env`
+- **Manual Method**: Add each variable individually in the dashboard
+- **Important**: Never commit `.env` to git. Add to `.gitignore` and upload to Vercel separately
+
+**When to use other platforms**:
+- **Railway/Render**: For your Go backend service (independent scaling)
+- **Self-hosted**: If you need complete control over infrastructure
+- **Cloudflare**: If you need global edge distribution (pair with Vercel)
 
 ### Deploy to Your Own Server
 

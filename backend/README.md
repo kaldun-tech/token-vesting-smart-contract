@@ -422,7 +422,131 @@ abigen --abi ../artifacts/contracts/TokenVesting.sol/TokenVesting.json \
 
 ## Deployment
 
-### Using Docker
+### Recommended: Railway or Render ⭐
+
+For the Go backend, use **Railway** or **Render** for independent scaling from the frontend. These platforms are specifically designed for backend services and handle stateful services (with databases) better than frontend-only platforms.
+
+#### Why Not Vercel for Backend?
+
+| Aspect | Vercel | Railway | Render |
+|--------|--------|---------|--------|
+| **Go Support** | ❌ Serverless only (cold starts) | ✅ Native Go support | ✅ Native Go support |
+| **Stateful Services** | ⚠️ Limited (functions only) | ✅ Full database support | ✅ Full database support |
+| **PostgreSQL Hosting** | ❌ Not built-in | ✅ Included | ✅ Included |
+| **Persistent Storage** | ❌ No | ✅ Yes | ✅ Yes |
+| **Environment Variables** | ✅ Upload `.env` | ✅ Upload `.env` | ✅ Manual entry |
+| **Cost** | ~$20/month | ~$5-15/month | ~$7-20/month |
+| **Ideal For** | Frontend only | Backend + Database | Backend + Database |
+
+**Key Difference**: Vercel runs on serverless (each request spawns new instance), while Railway/Render run persistent servers (always running, better for APIs with databases).
+
+#### Deployment Strategy
+
+```
+┌──────────────────┐         ┌──────────────────┐
+│ Next.js Frontend │         │  Go Backend API  │
+│   (Vercel) ✅    │         │  (Railway) ✅    │
+└────────┬─────────┘         └────────┬─────────┘
+         │                            │
+         └─────────────┬──────────────┘
+                       │
+              ┌────────▼────────┐
+              │  PostgreSQL DB  │
+              │   (Railway) ✅  │
+              └─────────────────┘
+```
+
+**Benefits of Separation**:
+- **Independent Scaling**: Backend handles more load than frontend
+- **Separate Billing**: Only pay for what each service needs
+- **Reliability**: Frontend outage doesn't affect backend (and vice versa)
+- **Development**: Backend developers can work independently from frontend team
+
+### Option 1: Deploy to Railway (Recommended) ⭐
+
+Railway is the easiest option and includes PostgreSQL hosting.
+
+1. **Create Railway Account**:
+   - Go to https://railway.app
+   - Sign up with GitHub
+   - Create new project
+
+2. **Add PostgreSQL Service**:
+   - Click "Add Service" → "Database" → "PostgreSQL"
+   - Railway creates the database automatically
+   - Copy `DATABASE_URL` for later
+
+3. **Add Go Service**:
+   - Click "Add Service" → "GitHub Repo"
+   - Select your token-vesting repository
+   - Set root directory: `/backend`
+
+4. **Configure Environment Variables**:
+   - In Railway dashboard → Variables
+   - Add environment variables (copy from `.env`):
+     ```
+     VESTING_CONTRACT_ADDRESS=0x5D6709Ce17C956833b66Ade058832C1890af19b7
+     TOKEN_ADDRESS=0x...
+     START_BLOCK=15000000
+     RPC_URL=https://sepolia.base.org
+     PORT=8080
+     ```
+   - `DATABASE_URL` is auto-set by Railway
+   - Upload `.env` file via "Raw Editor" option
+
+5. **Deploy**:
+   - Railway auto-deploys on git push
+   - View logs in Dashboard
+   - Test: `https://your-project.up.railway.app/health`
+
+**Cost Estimate**: ~$5-15/month (includes PostgreSQL)
+
+### Option 2: Deploy to Render
+
+Render is similar to Railway with slightly different UX.
+
+1. **Create Render Account**:
+   - Go to https://render.com
+   - Sign up with GitHub
+
+2. **Create PostgreSQL Database**:
+   - Dashboard → "New" → "PostgreSQL"
+   - Note the `Internal Database URL`
+
+3. **Create Go Web Service**:
+   - Dashboard → "New" → "Web Service"
+   - Connect GitHub repository
+   - Settings:
+     - Name: `token-vesting-api`
+     - Build Command: `cd backend && go build -o api cmd/api/main.go`
+     - Start Command: `./backend/api`
+     - Root Directory: `/` (leave empty or `/`)
+     - Environment: `Go`
+
+4. **Set Environment Variables**:
+   - Dashboard → Service → Environment
+   - Add each variable manually:
+     ```
+     DATABASE_URL=postgresql://...
+     VESTING_CONTRACT_ADDRESS=0x5D6709Ce17C956833b66Ade058832C1890af19b7
+     TOKEN_ADDRESS=0x...
+     START_BLOCK=15000000
+     RPC_URL=https://sepolia.base.org
+     PORT=8080
+     ```
+   - Cannot upload `.env` directly (manual entry only)
+
+5. **Deploy**:
+   - Render auto-deploys on git push
+   - Test: `https://your-api.onrender.com/health`
+
+**Cost Estimate**: ~$7-20/month
+
+### Option 3: Self-Hosted with Docker
+
+For maximum control, self-host on your own server or VPS.
+
+#### Docker Setup
 
 ```dockerfile
 # Dockerfile
@@ -446,9 +570,62 @@ docker build -t vesting-api .
 docker run -p 8080:8080 --env-file .env vesting-api
 ```
 
-### Using Docker Compose
+#### Using Docker Compose
+
+```yaml
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: vesting
+      POSTGRES_PASSWORD: your_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgres://postgres:your_password@postgres:5432/vesting?sslmode=disable
+      VESTING_CONTRACT_ADDRESS: 0x5D6709Ce17C956833b66Ade058832C1890af19b7
+      TOKEN_ADDRESS: 0x...
+      START_BLOCK: 15000000
+      RPC_URL: https://sepolia.base.org
+      PORT: 8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
+```
+
+Run with:
+```bash
+docker-compose up
+```
 
 See `../docker-compose.yml` in project root for full stack deployment.
+
+**Cost Estimate**: $5-20/month (VPS provider dependent)
+
+### Comparison & Recommendation
+
+| Aspect | Railway ⭐ | Render | Self-Hosted |
+|--------|----------|--------|-------------|
+| **Ease of Setup** | ✅ Easiest | ⚠️ Medium | ❌ Complex |
+| **Env Variables** | ✅ Upload `.env` | ⚠️ Manual only | ✅ Any method |
+| **Database Included** | ✅ Yes | ✅ Yes | ❌ Must set up |
+| **Auto-Deploy** | ✅ Yes | ✅ Yes | ❌ Manual |
+| **Cost** | ✅ $5-15/mo | ⚠️ $7-20/mo | ⚠️ $5-20/mo |
+| **Maintenance** | ✅ None | ✅ None | ❌ Full |
+| **Learning Curve** | ✅ 15 min | ⚠️ 20 min | ❌ 1-2 hours |
+
+**Recommendation**: **Railway** - best for getting started quickly with minimal configuration.
 
 ## Troubleshooting
 
