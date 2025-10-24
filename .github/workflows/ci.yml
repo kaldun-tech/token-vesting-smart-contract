@@ -43,7 +43,7 @@ jobs:
         continue-on-error: true # Don't fail if coverage doesn't meet threshold
 
       - name: Upload coverage to artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: always()
         with:
           name: hardhat-coverage
@@ -118,7 +118,7 @@ jobs:
         run: ./test.sh -c
 
       - name: Upload coverage to artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: always()
         with:
           name: backend-coverage
@@ -209,7 +209,7 @@ jobs:
           NEXT_PUBLIC_VESTING_ADDRESS: '0x0000000000000000000000000000000000000000'
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: success()
         with:
           name: frontend-build
