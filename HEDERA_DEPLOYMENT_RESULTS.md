@@ -1,6 +1,6 @@
 # Hedera Testnet Deployment Results
 
-**Date**: October 22, 2025
+**Date**: October 25, 2025
 **Status**: ✅ **SUCCESS**
 
 ## Deployment Summary
@@ -9,14 +9,31 @@
 
 | Contract | Address | Network |
 |----------|---------|---------|
-| **MockERC20** | `0xCEC21c39db15FF533229b88D18467B5070d394a9` | Hedera Testnet |
-| **TokenVesting** | `0x1Fa5b39971b647dBFe6797312E2bf5c41784187A` | Hedera Testnet |
+| **MockERC20** | `0x13332Bb167e96d1b68B5021784B06d6C5e6F0F8b` | Hedera Testnet |
+| **TokenVesting** | `0xDd83934d6E6f0098e799D1614276829FE2f89E6B` | Hedera Testnet |
 | **Deployer** | `0xD00333995351A41ed6335486311D89bd65d5F11b` | Hedera Testnet |
 
 ### Hashscan Explorer Links
 
-- **Token Contract**: https://testnet.hedera.hashscan.io/address/0xCEC21c39db15FF533229b88D18467B5070d394a9
-- **Vesting Contract**: https://testnet.hedera.hashscan.io/address/0x1Fa5b39971b647dBFe6797312E2bf5c41784187A
+- **Token Contract**: https://hashscan.io/testnet/contract/0.0.7131958
+- **Vesting Contract**: https://hashscan.io/testnet/contract/0.0.7131959
+
+### Contract Verification Status
+
+| Contract | Status | Verified | Link |
+|----------|--------|----------|------|
+| **MockERC20** | ⏳ Pending | No | [View](https://hashscan.io/testnet/contract/0.0.7131958) |
+| **TokenVesting** | ⏳ Pending | No | [View](https://hashscan.io/testnet/contract/0.0.7131959) |
+
+**Verification Method**: Sourcify (Full source code matching)
+
+**To Verify**: See [HEDERA_CONTRACT_VERIFICATION.md](./HEDERA_CONTRACT_VERIFICATION.md) for step-by-step instructions.
+
+**Benefits After Verification**:
+- ✅ Source code visible on HashScan
+- ✅ ABI accessible for integrations
+- ✅ User trust and transparency
+- ✅ No cost or required action
 
 ## Deployment Process
 
@@ -44,13 +61,22 @@ npx hardhat run scripts/deploy.js --network hederaTestnet
 npx hardhat run scripts/test-hedera.js --network hederaTestnet
 ```
 
-**Test Results**:
+**Test Results** (October 25, 2025):
 1. ✅ Deployer has 1,000,000 TEST tokens
 2. ✅ Approved 100 TEST tokens for vesting
-3. ✅ Created vesting schedule successfully
-4. ✅ Verified vested amount is 0 (before cliff)
-5. ✅ Retrieved schedule details
-6. ✅ Gas cost calculated
+3. ✅ Created vesting schedule successfully (197,219 gas units)
+4. ✅ Verified vested amount is 0 TEST (before cliff, as expected)
+5. ✅ Retrieved schedule details:
+   - Beneficiary: `0x1234567890123456789012345678901234567890`
+   - Amount: 100 TEST
+   - Cliff: 365 days
+   - Duration: 4 years
+   - Revocable: true
+   - Revoked: false
+6. ✅ Gas cost analysis:
+   - Create schedule gas: **197,219 units**
+   - Gas price: **540 Gwei**
+   - Estimated cost: **0.10649826 HBAR** (~$0.001 USD)
 
 ## Cross-Chain Comparison: Hedera vs Base Sepolia
 
@@ -96,16 +122,17 @@ Hedera's EVM implementation has different computational costs due to:
 1. **Smaller Ecosystem**: Fewer DeFi composability opportunities (currently)
 2. **Gas Price Floor**: Minimum 540 Gwei (fixed, no flexibility)
 3. **Less Developer Familiarity**: Smaller Web3 community
-4. **Verification**: Manual contract verification required (vs automatic on mainnet explorers)
+4. **Verification**: Manual contract verification via Sourcify (guides provided)
 
 ## Deployment Artifacts
 
 ### Files Generated
 
 ```
-./deployments/hederaTestnet.json       # Deployment info with addresses
-./scripts/test-hedera.js               # Test script for Hedera vesting
-./HEDERA_DEPLOYMENT_STRATEGY.md        # Full deployment guide
+./deployments/hederaTestnet.json          # Deployment info with addresses
+./scripts/test-hedera.js                  # Test script for Hedera vesting
+./HEDERA_DEPLOYMENT_STRATEGY.md           # Full deployment guide
+./HEDERA_CONTRACT_VERIFICATION.md         # Contract verification guide
 ```
 
 ### Environment Setup
@@ -204,8 +231,13 @@ done
 - [x] Test vesting functionality
 - [x] Compare costs with Base Sepolia
 - [x] Document results
+- [x] Create verification guide
 
-### 📋 Future Work
+### 📋 In Progress
+- [ ] **Verify MockERC20 on HashScan** (use [HEDERA_CONTRACT_VERIFICATION.md](./HEDERA_CONTRACT_VERIFICATION.md))
+- [ ] **Verify TokenVesting on HashScan** (use [HEDERA_CONTRACT_VERIFICATION.md](./HEDERA_CONTRACT_VERIFICATION.md))
+
+### 🚀 Future Work
 - [ ] Deploy to Hedera Mainnet (requires mainnet HBAR)
 - [ ] Add Hedera support to frontend
 - [ ] Monitor long-term cost trends
@@ -230,5 +262,5 @@ Both networks are supported with identical contract behavior.
 
 ---
 
-**Deployment Verified**: October 22, 2025
+**Deployment Verified**: October 25, 2025
 **Status**: ✅ Ready for Production
