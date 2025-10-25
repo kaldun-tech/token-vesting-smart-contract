@@ -25,6 +25,13 @@ module.exports = {
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
       chainId: 84532,
     },
+    hederaTestnet: {
+      url: "https://testnet.hashio.io/api",
+      accounts: process.env.HEDERA_PRIVATE_KEY ? [process.env.HEDERA_PRIVATE_KEY] : [],
+      chainId: 296,
+      gasPrice: 540_000_000_000,  // 540 Gwei (Hedera's minimum gas price in wei)
+      gas: 3_000_000,  // Default gas limit
+    },
   },
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY || process.env.BASESCAN_API_KEY || "",
@@ -35,6 +42,14 @@ module.exports = {
         urls: {
           apiURL: "https://api-sepolia.basescan.org/api",
           browserURL: "https://sepolia.basescan.org"
+        }
+      },
+      {
+        network: "hederaTestnet",
+        chainId: 296,
+        urls: {
+          apiURL: "https://testnet.hashio.io/api",
+          browserURL: "https://testnet.hedera.hashscan.io"
         }
       }
     ]

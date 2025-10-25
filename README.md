@@ -542,6 +542,27 @@ npx hardhat verify --network baseSepolia VESTING_ADDRESS "TOKEN_ADDRESS"
 - **Deployer**: `0xF25DA65784D566fFCC60A1f113650afB688A14ED`
 - **Deployment Date**: October 12, 2025
 
+#### Hedera Testnet ✅
+
+**Live!** Contracts deployed and tested on Hedera Testnet.
+
+- **MockERC20 Token**: `0xCEC21c39db15FF533229b88D18467B5070d394a9`
+- **TokenVesting Contract**: `0x1Fa5b39971b647dBFe6797312E2bf5c41784187A`
+- **Deployment Date**: October 22, 2025
+
+**View on Hashscan Explorer**:
+- Token: [View on Hashscan](https://testnet.hedera.hashscan.io/address/0xCEC21c39db15FF533229b88D18467B5070d394a9)
+- Vesting: [View on Hashscan](https://testnet.hedera.hashscan.io/address/0x1Fa5b39971b647dBFe6797312E2bf5c41784187A)
+
+Benefits of Hedera:
+- 10,000+ TPS (vs ~7-10 on Base Sepolia)
+- Fixed low fees (~$0.001 per tx, 50-500x cheaper)
+- Instant transaction finality
+- EVM compatible (same Solidity code, no changes)
+- Deterministic gas costs (no surprises)
+
+**See** [HEDERA_DEPLOYMENT_RESULTS.md](./HEDERA_DEPLOYMENT_RESULTS.md) for detailed deployment analysis.
+
 View on Basescan:
 - Token: [View Verified Contract](https://sepolia.basescan.org/address/0x751f3c0aF0Ed18d9F70108CD0c4d878Aa0De59A8#code)
 - Vesting: [View Verified Contract](https://sepolia.basescan.org/address/0xb682eb7BA41859Ed9f21EC95f44385a8967A16b5#code)

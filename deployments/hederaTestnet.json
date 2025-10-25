@@ -1,0 +1,9 @@
+{
+  "network": "hederaTestnet",
+  "timestamp": "2025-10-25T21:08:29.925Z",
+  "deployer": "0xD00333995351A41ed6335486311D89bd65d5F11b",
+  "contracts": {
+    "MockERC20": "0x13332Bb167e96d1b68B5021784B06d6C5e6F0F8b",
+    "TokenVesting": "0xDd83934d6E6f0098e799D1614276829FE2f89E6B"
+  }
+}
