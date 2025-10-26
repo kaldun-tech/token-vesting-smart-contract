@@ -8,8 +8,9 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kaldun-tech/token-vesting-backend/internal/models"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/kaldun-tech/token-vesting-backend/internal/models"
 )
 
 // MockDatabase implements database methods for testing

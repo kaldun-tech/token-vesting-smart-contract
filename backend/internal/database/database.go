@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/kaldun-tech/token-vesting-backend/internal/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+
+	"github.com/kaldun-tech/token-vesting-backend/internal/models"
 )
 
 type Database struct {

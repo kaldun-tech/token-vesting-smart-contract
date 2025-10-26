@@ -4,10 +4,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/kaldun-tech/token-vesting-backend/internal/models"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+
+	"github.com/kaldun-tech/token-vesting-backend/internal/models"
 )
 
 // setupTestDB creates an in-memory SQLite database for testing

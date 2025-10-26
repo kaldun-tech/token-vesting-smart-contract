@@ -179,36 +179,37 @@ make test && go tool cover -html=coverage.out
 
 ## Frontend (Next.js) - Basic Checks Only
 
-### Current Checks
+### Quality Checks
 
-- ✅ **TypeScript**: Type checking with `npx tsc --noEmit`
-- ✅ **ESLint**: Code linting with Next.js rules
-- ✅ **Build**: Production build verification
+The frontend uses three types of checks to ensure code quality:
 
-### Running Checks
+| Check | Command | Purpose |
+|-------|---------|---------|
+| **TypeScript** | `npx tsc --noEmit` | Type safety checking |
+| **ESLint** | `npm run lint` | Code quality & style |
+| **Production Build** | `npm run build` | Build verification |
+
+### Running All Checks
 
 ```bash
 cd frontend
 
-# TypeScript check
-npx tsc --noEmit
-
-# Linting
-npm run lint
-
-# Production build
-npm run build
-
-# All checks
+# All checks together
 npx tsc --noEmit && npm run lint && npm run build
+
+# Individual checks
+npx tsc --noEmit              # TypeScript only
+npm run lint                  # ESLint only
+npm run lint -- --fix         # Auto-fix linting issues
+npm run build                 # Production build
 ```
 
-### Assessment: ⚠️ Minimal
+### Assessment: ⚠️ Minimal (Sufficient for Testnet)
 
 **Strengths**:
-- TypeScript catches type errors
-- ESLint enforces code quality
-- Build process validates
+- ✅ TypeScript catches type errors at compile time
+- ✅ ESLint enforces code quality and style consistency
+- ✅ Build process validates production readiness
 
 **Gaps**:
 - ❌ No unit tests (Jest + React Testing Library)
@@ -216,47 +217,7 @@ npx tsc --noEmit && npm run lint && npm run build
 - ❌ No integration tests (wagmi hooks)
 - ❌ No E2E tests (Playwright/Cypress)
 
-### Recommendation: Add Testing (Optional)
-
-**Option 1: Unit + Component Tests (Recommended)**
-
-Install Jest + React Testing Library:
-```bash
-cd frontend
-npm install --save-dev jest @testing-library/react @testing-library/jest-dom @testing-library/user-event jest-environment-jsdom
-```
-
-Benefits:
-- Test components in isolation
-- Test wagmi hook behavior
-- Fast feedback loop
-
-Example test:
-```typescript
-// __tests__/VestingDashboard.test.tsx
-import { render, screen } from '@testing-library/react'
-import VestingDashboard from '@/components/VestingDashboard'
-
-test('shows loading state', () => {
-  render(<VestingDashboard />)
-  expect(screen.getByText('Loading...')).toBeInTheDocument()
-})
-```
-
-**Option 2: E2E Tests (Advanced)**
-
-Install Playwright:
-```bash
-cd frontend
-npm install --save-dev @playwright/test
-```
-
-Benefits:
-- Test full user flows
-- Test wallet connection
-- Test real blockchain interactions (with testnet)
-
-**Priority**: Low - Current TypeScript + ESLint + Build checks are sufficient for a simple frontend. Add tests if:
+**Priority**: Low - Current checks are sufficient for a simple testnet frontend. Add tests if:
 - Frontend becomes more complex
 - Multiple developers working on it
 - Critical user flows need guarantees
@@ -298,25 +259,6 @@ make lint
 
 # Fix auto-fixable issues
 golangci-lint run --fix
-
-# Run specific linter
-golangci-lint run --disable-all --enable=errcheck
-```
-
-### Frontend
-
-**ESLint** (JavaScript/TypeScript linter):
-- ✅ Integrated with Next.js
-- ✅ Runs automatically in CI/CD
-
-```bash
-cd frontend
-
-# Run linting
-npm run lint
-
-# Fix auto-fixable issues
-npm run lint -- --fix
 ```
 
 ---

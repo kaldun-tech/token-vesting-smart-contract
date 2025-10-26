@@ -9,14 +9,15 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kaldun-tech/token-vesting-backend/internal/api"
-	"github.com/kaldun-tech/token-vesting-backend/internal/database"
-	"github.com/kaldun-tech/token-vesting-backend/internal/models"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+
+	"github.com/kaldun-tech/token-vesting-backend/internal/api"
+	"github.com/kaldun-tech/token-vesting-backend/internal/database"
+	"github.com/kaldun-tech/token-vesting-backend/internal/models"
 )
 
 // TestServer wraps the API server for integration testing
