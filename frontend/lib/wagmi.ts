@@ -52,5 +52,5 @@ export const config = createConfig({
   transports: {
     [baseSepolia.id]: http(),
   },
-  ssr: true, // Enable server-side rendering
+  ssr: false, // Disable SSR to prevent WalletConnect initialization during build
 })

@@ -1,13 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  webpack: (config) => {
+  webpack: (config, { isServer }) => {
     config.resolve.fallback = {
       fs: false,
       net: false,
       tls: false,
       // Suppress MetaMask SDK React Native warnings
       '@react-native-async-storage/async-storage': false,
+      // Fix WalletConnect ESM module compatibility during build
+      '@walletconnect/ethereum-provider': false,
     };
     config.externals.push('pino-pretty', 'lokijs', 'encoding');
 
@@ -19,6 +21,9 @@ const nextConfig = {
     return config;
   },
   transpilePackages: ['@rainbow-me/rainbowkit', '@vanilla-extract/css'],
+  experimental: {
+    optimizePackageImports: ['@wagmi/connectors'],
+  },
 }
 
 module.exports = nextConfig
