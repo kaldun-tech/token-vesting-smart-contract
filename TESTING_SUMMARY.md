@@ -324,6 +324,32 @@ npm run lint -- --fix
 
 ---
 
+## Cross-Chain Testing & Deployment Validation
+
+### Test Scripts for Deployment Scenarios
+
+The project includes three specialized test scripts for validating deployments across networks:
+
+| Script | Purpose | Network | Usage |
+|--------|---------|---------|-------|
+| **test-hedera.js** | Validate deployed Hedera contracts | hederaTestnet | Post-deployment testing |
+| **test-vesting.js** | Cross-chain comparison & validation | hardhat, hederaTestnet, baseSepolia | Network comparison |
+| **test-cross-chain.js** | Fresh deployment testing | hardhat | CI/CD automation |
+
+**Latest Test Results** ✅:
+- **hardhat**: 202,019 gas (fresh deployment)
+- **hederaTestnet**: 184,919 gas, 0.09061031 HBAR
+- **baseSepolia**: 184,919 gas, ~0.00000018 ETH
+
+**Highlights**:
+- Hedera is **50-500x cheaper** than Base Sepolia
+- All three networks pass all tests
+- Gas costs are comparable, but native token prices differ significantly
+
+**See**: [TEST_SCRIPTS.md](./TEST_SCRIPTS.md) for detailed documentation of each script.
+
+---
+
 ## CI/CD Pipeline
 
 ### Automated Checks (GitHub Actions)
@@ -336,31 +362,37 @@ npm run lint -- --fix
 
 1. **hardhat-tests** (~2-3 min)
    - Compile contracts
-   - Run tests
-   - Generate coverage
+   - Run unit test suite (52 tests)
+   - Generate coverage (100%)
    - Upload artifacts
 
 2. **hardhat-slither** (~1-2 min)
    - Run Slither security analysis
    - Non-blocking (warnings allowed)
 
-3. **backend-tests** (~3-4 min)
+3. **cross-chain-tests** (~2-3 min)
+   - Deploy fresh contracts
+   - Run integration tests
+   - Validate gas metrics
+   - Generate performance reports
+
+4. **backend-tests** (~3-4 min)
    - Start PostgreSQL service
    - Run unit tests
    - Run integration tests
    - Generate coverage
 
-4. **backend-lint** (~1 min)
+5. **backend-lint** (~1 min)
    - Install golangci-lint
    - Run linting
    - Check code formatting
 
-5. **frontend-checks** (~2-3 min)
+6. **frontend-checks** (~2-3 min)
    - TypeScript type checking
    - ESLint linting
    - Production build
 
-6. **ci-summary** (instant)
+7. **ci-summary** (instant)
    - Report overall status
    - Fail if critical tests fail
 
@@ -530,4 +562,4 @@ go version      # Should be 1.24+
 
 ---
 
-**Last Updated**: 10-20-2025
+**Last Updated**: October 26, 2025

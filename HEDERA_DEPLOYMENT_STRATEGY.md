@@ -396,16 +396,62 @@ Create `HEDERA_DEPLOYMENT_RESULTS.md`:
 
 ### Step 4: Test on Hedera
 
-#### 4.1 Create Vesting Schedule
+#### 4.1 Run Automated Test Script
+
+Instead of manual commands, use the automated test script:
+
+```bash
+npx hardhat run scripts/test-hedera.js --network hederaTestnet
+```
+
+This script:
+- ✅ Loads deployed contract addresses from `deployments/hederaTestnet.json`
+- ✅ Mints 1,000 TEST tokens
+- ✅ Approves the vesting contract
+- ✅ Creates a vesting schedule (100 tokens, 1-year cliff, 4-year duration)
+- ✅ Queries vested amount (should be 0 before cliff)
+- ✅ Retrieves schedule details
+- ✅ Calculates gas costs
+
+**Expected Output:**
+```
+HEDERA TESTNET - VESTING TEST
+Token: 0x13332Bb167e96d1b68B5021784B06d6C5e6F0F8b
+Vesting: 0xDd83934d6E6f0098e799D1614276829FE2f89E6B
+
+1. Deployer token balance: 1000000.0 TEST
+2. Approving token transfer...
+   ✓ Approved 100.0 TEST tokens
+3. Creating vesting schedule...
+   ✓ Vesting schedule created!
+   - Beneficiary: 0x1234567890123456789012345678901234567890
+   - Amount: 100.0 TEST
+   - Cliff: 365 days
+   - Duration: 4 years
+4. Querying vested amount...
+   ✓ Vested amount (before cliff): 0.0 TEST
+5. Vesting schedule details...
+   ✓ Schedule retrieved
+6. Gas cost analysis:
+   - Create schedule gas used: 197219
+   - Gas price: 540 Gwei
+   - Estimated cost: 0.10649826 HBAR
+
+✅ ALL TESTS PASSED!
+```
+
+#### 4.2 Manual Testing (Optional)
+
+If you prefer to test manually in Hardhat console:
 
 ```bash
 npx hardhat console --network hederaTestnet
 ```
 
 ```javascript
-// In console:
-const tokenAddress = "0x1234...";  // From deployment
-const vestingAddress = "0x5678...";
+// Load deployed contracts
+const tokenAddress = "0x13332Bb167e96d1b68B5021784B06d6C5e6F0F8b";
+const vestingAddress = "0xDd83934d6E6f0098e799D1614276829FE2f89E6B";
 
 const Token = await ethers.getContractFactory("MockERC20");
 const token = Token.attach(tokenAddress);
@@ -413,38 +459,19 @@ const token = Token.attach(tokenAddress);
 const Vesting = await ethers.getContractFactory("TokenVesting");
 const vesting = Vesting.attach(vestingAddress);
 
-// Mint tokens
-const tx1 = await token.mint(ethers.utils.parseEther("1000"));
-await tx1.wait();
-console.log("Minted 1000 tokens");
-
-// Approve vesting contract
-const tx2 = await token.approve(vestingAddress, ethers.utils.parseEther("1000"));
-await tx2.wait();
-console.log("Approved vesting contract");
-
-// Create vesting schedule
-const beneficiary = "0x9abc..."; // Some address
-const amount = ethers.utils.parseEther("100");
-const cliffDuration = 31536000; // 1 year
-const duration = 126144000;      // 4 years
-const revocable = true;
-
-const tx3 = await vesting.createVestingSchedule(
-  beneficiary,
-  amount,
-  cliffDuration,
-  duration,
-  revocable
+// Create a vesting schedule
+const tx = await vesting.createVestingSchedule(
+  "0x1234567890123456789012345678901234567890", // beneficiary
+  ethers.parseEther("100"),                       // amount
+  31536000,                                       // 1 year cliff
+  126144000,                                      // 4 year duration
+  true                                            // revocable
 );
-await tx3.wait();
-console.log("Vesting schedule created!");
-
-// Verify on explorer
-console.log("View on Hashscan: https://hashscan.io/testnet/address/" + vestingAddress);
+await tx.wait();
+console.log("✓ Schedule created!");
 ```
 
-#### 4.2 Verify Events on Hedera Explorer
+#### 4.3 Verify Events on Hedera Explorer
 
 Visit: `https://hashscan.io/testnet/address/0xDd83934d6E6f0098e799D1614276829FE2f89E6B`
 
@@ -461,58 +488,51 @@ You should see:
 npx hardhat run scripts/deploy.js --network baseSepolia
 ```
 
-#### 5.2 Run Same Test on Both Networks
+#### 5.2 Run Vesting Test on Both Networks
 
+Use the provided test script to run identical tests on each network:
+
+**Test on Hardhat (Local Development)**
 ```bash
-# Create test script: scripts/test-vesting.js
-async function testVesting(networkName) {
-  console.log(`\n=== Testing on ${networkName} ===`);
-
-  const [deployer, beneficiary] = await ethers.getSigners();
-
-  // Deploy contracts
-  const token = await ethers.getContractFactory("MockERC20").then(f => f.deploy());
-  const vesting = await ethers.getContractFactory("TokenVesting").then(f => f.deploy(token.address));
-
-  console.log(`Token: ${token.address}`);
-  console.log(`Vesting: ${vesting.address}`);
-
-  // Test 1: Create vesting schedule
-  await token.mint(ethers.utils.parseEther("1000"));
-  await token.approve(vesting.address, ethers.utils.parseEther("1000"));
-
-  const tx = await vesting.createVestingSchedule(
-    beneficiary.address,
-    ethers.utils.parseEther("100"),
-    31536000,  // 1 year cliff
-    126144000, // 4 year duration
-    true       // revocable
-  );
-
-  const receipt = await tx.wait();
-  console.log(`✅ Schedule created - Gas used: ${receipt.gasUsed}`);
-
-  // Test 2: Query vested amount (before cliff)
-  const vested = await vesting.vestedAmount(beneficiary.address);
-  console.log(`Vested amount (before cliff): ${ethers.utils.formatEther(vested)} tokens`);
-
-  // Compare gas costs
-  console.log(`\nGas Costs on ${networkName}:`);
-  console.log(`- Deploy Token: ~${receipt.gasUsed} gas`);
-  console.log(`- Create Schedule: ~${receipt.gasUsed} gas`);
-}
-
-// Run tests
-(async () => {
-  await testVesting("Hedera Testnet");
-  await testVesting("Base Sepolia");
-})();
+npx hardhat run scripts/test-vesting.js --network hardhat
 ```
 
-Run comparison:
+**Test on Hedera Testnet**
 ```bash
 npx hardhat run scripts/test-vesting.js --network hederaTestnet
+```
+
+**Test on Base Sepolia**
+```bash
 npx hardhat run scripts/test-vesting.js --network baseSepolia
+```
+
+The script will:
+- ✅ Load deployed contract addresses (for testnets) or deploy fresh ones (for local)
+- ✅ Mint 1,000 TEST tokens
+- ✅ Approve the vesting contract
+- ✅ Create a vesting schedule (100 tokens, 1-year cliff, 4-year duration)
+- ✅ Query vested amount (should be 0 before cliff)
+- ✅ Calculate and display gas costs
+- ✅ Provide network-specific cost estimates
+
+**Example Output:**
+```
+======================================================================
+✅ ALL TESTS PASSED!
+======================================================================
+
+📊 Summary for hederaTestnet:
+   Token Address: 0x13332Bb167e96d1b68B5021784B06d6C5e6F0F8b
+   Vesting Address: 0xDd83934d6E6f0098e799D1614276829FE2f89E6B
+   Create Schedule Gas: 197219 units
+   Gas Price: 540 Gwei
+   Estimated Cost: 0.10649826 HBAR (~$0.001 USD)
+
+   ✨ Hedera Advantages:
+      • 50-500x cheaper than Ethereum L2
+      • Instant finality (no confirmation delay)
+      • Fixed, predictable costs
 ```
 
 #### 5.3 Document Findings

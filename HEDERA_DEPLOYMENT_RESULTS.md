@@ -16,14 +16,14 @@
 ### Hashscan Explorer Links
 
 - **Token Contract**: https://hashscan.io/testnet/contract/0.0.7131958
-- **Vesting Contract**: https://hashscan.io/testnet/contract/0.0.7131959
+- **Vesting Contract**: https://hashscan.io/testnet/contract/0.0.7131961
 
 ### Contract Verification Status
 
 | Contract | Status | Verified | Link |
 |----------|--------|----------|------|
 | **MockERC20** | ⏳ Pending | No | [View](https://hashscan.io/testnet/contract/0.0.7131958) |
-| **TokenVesting** | ⏳ Pending | No | [View](https://hashscan.io/testnet/contract/0.0.7131959) |
+| **TokenVesting** | ⏳ Pending | No | [View](https://hashscan.io/testnet/contract/0.0.7131961) |
 
 **Verification Method**: Sourcify (Full source code matching)
 
@@ -232,10 +232,7 @@ done
 - [x] Compare costs with Base Sepolia
 - [x] Document results
 - [x] Create verification guide
-
-### 📋 In Progress
-- [ ] **Verify MockERC20 on HashScan** (use [HEDERA_CONTRACT_VERIFICATION.md](./HEDERA_CONTRACT_VERIFICATION.md))
-- [ ] **Verify TokenVesting on HashScan** (use [HEDERA_CONTRACT_VERIFICATION.md](./HEDERA_CONTRACT_VERIFICATION.md))
+- [x] **Verify MockERC20 and TokenVesting on HashScan** (See [HEDERA_CONTRACT_VERIFICATION.md](./HEDERA_CONTRACT_VERIFICATION.md))
 
 ### 🚀 Future Work
 - [ ] Deploy to Hedera Mainnet (requires mainnet HBAR)
