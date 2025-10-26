@@ -84,7 +84,7 @@ npx hardhat test
 npx hardhat coverage
 
 # With gas reporting
-REPORT_GAS=true npx hardhat test
+export REPORT_GAS=true && npx hardhat test
 
 # Specific test
 npx hardhat test --grep "Should create a valid vesting schedule"
@@ -144,9 +144,6 @@ test/integration        N/A         10 test suites (24+ tests)
 ```bash
 # All tests
 cd backend && make test
-
-# With verbose output
-make test -v
 
 # With coverage
 make test && go tool cover -html=coverage.out
