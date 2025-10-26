@@ -1,0 +1,702 @@
+{
+  "compiler": {
+    "version": "0.8.20+commit.a1b79de6"
+  },
+  "language": "Solidity",
+  "output": {
+    "abi": [
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "_token",
+            "type": "address"
+          }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "owner",
+            "type": "address"
+          }
+        ],
+        "name": "OwnableInvalidOwner",
+        "type": "error"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "OwnableUnauthorizedAccount",
+        "type": "error"
+      },
+      {
+        "inputs": [],
+        "name": "ReentrancyGuardReentrantCall",
+        "type": "error"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "token",
+            "type": "address"
+          }
+        ],
+        "name": "SafeERC20FailedOperation",
+        "type": "error"
+      },
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "internalType": "address",
+            "name": "previousOwner",
+            "type": "address"
+          },
+          {
+            "indexed": true,
+            "internalType": "address",
+            "name": "newOwner",
+            "type": "address"
+          }
+        ],
+        "name": "OwnershipTransferred",
+        "type": "event"
+      },
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "internalType": "address",
+            "name": "beneficiary",
+            "type": "address"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          }
+        ],
+        "name": "TokensReleased",
+        "type": "event"
+      },
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "internalType": "address",
+            "name": "beneficiary",
+            "type": "address"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "refunded",
+            "type": "uint256"
+          }
+        ],
+        "name": "VestingRevoked",
+        "type": "event"
+      },
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "internalType": "address",
+            "name": "beneficiary",
+            "type": "address"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "start",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "cliff",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "duration",
+            "type": "uint256"
+          }
+        ],
+        "name": "VestingScheduleCreated",
+        "type": "event"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "beneficiary",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "cliffDuration",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "duration",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "revocable",
+            "type": "bool"
+          }
+        ],
+        "name": "createVestingSchedule",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "beneficiary",
+            "type": "address"
+          }
+        ],
+        "name": "getVestingSchedule",
+        "outputs": [
+          {
+            "components": [
+              {
+                "internalType": "address",
+                "name": "beneficiary",
+                "type": "address"
+              },
+              {
+                "internalType": "uint256",
+                "name": "start",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "cliff",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "duration",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "released",
+                "type": "uint256"
+              },
+              {
+                "internalType": "bool",
+                "name": "revocable",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "revoked",
+                "type": "bool"
+              }
+            ],
+            "internalType": "struct TokenVesting.VestingSchedule",
+            "name": "",
+            "type": "tuple"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "beneficiary",
+            "type": "address"
+          }
+        ],
+        "name": "hasVestingSchedule",
+        "outputs": [
+          {
+            "internalType": "bool",
+            "name": "",
+            "type": "bool"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [],
+        "name": "owner",
+        "outputs": [
+          {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "beneficiary",
+            "type": "address"
+          }
+        ],
+        "name": "releasableAmount",
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [],
+        "name": "release",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "inputs": [],
+        "name": "renounceOwnership",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "beneficiary",
+            "type": "address"
+          }
+        ],
+        "name": "revoke",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "inputs": [],
+        "name": "token",
+        "outputs": [
+          {
+            "internalType": "contract IERC20",
+            "name": "",
+            "type": "address"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "newOwner",
+            "type": "address"
+          }
+        ],
+        "name": "transferOwnership",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "beneficiary",
+            "type": "address"
+          }
+        ],
+        "name": "vestedAmount",
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          }
+        ],
+        "name": "vestingSchedules",
+        "outputs": [
+          {
+            "internalType": "address",
+            "name": "beneficiary",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "start",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "cliff",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "duration",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "released",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "revocable",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "revoked",
+            "type": "bool"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      }
+    ],
+    "devdoc": {
+      "author": "Token Vesting Team",
+      "custom:security-contact": "security@example.com",
+      "details": "Time-locked token vesting contract with cliff periods",
+      "errors": {
+        "OwnableInvalidOwner(address)": [
+          {
+            "details": "The owner is not a valid owner account. (eg. `address(0)`)"
+          }
+        ],
+        "OwnableUnauthorizedAccount(address)": [
+          {
+            "details": "The caller account is not authorized to perform an operation."
+          }
+        ],
+        "ReentrancyGuardReentrantCall()": [
+          {
+            "details": "Unauthorized reentrant call."
+          }
+        ],
+        "SafeERC20FailedOperation(address)": [
+          {
+            "details": "An operation with an ERC-20 token failed."
+          }
+        ]
+      },
+      "events": {
+        "TokensReleased(address,uint256)": {
+          "params": {
+            "amount": "Number of tokens released",
+            "beneficiary": "Address receiving tokens"
+          }
+        },
+        "VestingRevoked(address,uint256)": {
+          "params": {
+            "beneficiary": "Address whose schedule was revoked",
+            "refunded": "Amount of unvested tokens returned to owner"
+          }
+        },
+        "VestingScheduleCreated(address,uint256,uint256,uint256,uint256)": {
+          "params": {
+            "amount": "Total tokens to vest",
+            "beneficiary": "Address receiving vested tokens",
+            "cliff": "Cliff timestamp",
+            "duration": "Total vesting duration",
+            "start": "Start timestamp"
+          }
+        }
+      },
+      "kind": "dev",
+      "methods": {
+        "constructor": {
+          "details": "Constructor sets the ERC20 token address",
+          "params": {
+            "_token": "Address of the ERC20 token to be vested"
+          }
+        },
+        "createVestingSchedule(address,uint256,uint256,uint256,bool)": {
+          "details": "Transfers tokens from caller to this contract",
+          "params": {
+            "amount": "Total tokens to vest (in wei, 18 decimals)",
+            "beneficiary": "Address to receive vested tokens",
+            "cliffDuration": "Cliff period in seconds (e.g., 31536000 = 1 year)",
+            "duration": "Total vesting duration in seconds (e.g., 126144000 = 4 years)",
+            "revocable": "Whether the schedule can be revoked Requirements: - Beneficiary cannot be zero address - Amount must be greater than zero - Duration must be greater than zero - Cliff must be less than or equal to duration - Beneficiary must not have an existing schedule - Caller must have approved this contract to spend tokens - Caller must have sufficient token balance Effects: - Creates vesting schedule in storage - Transfers tokens from caller to contract - Emits VestingScheduleCreated event Example: createVestingSchedule(     0x123...,                    // beneficiary     1000000000000000000000,      // 1,000 tokens     31536000,                    // 1 year cliff     126144000,                   // 4 year total     true                         // revocable )"
+          }
+        },
+        "getVestingSchedule(address)": {
+          "details": "Convenience function to get all schedule details",
+          "params": {
+            "beneficiary": "Address to query"
+          },
+          "returns": {
+            "_0": "schedule Complete VestingSchedule struct"
+          }
+        },
+        "hasVestingSchedule(address)": {
+          "params": {
+            "beneficiary": "Address to check"
+          },
+          "returns": {
+            "_0": "bool True if schedule exists"
+          }
+        },
+        "owner()": {
+          "details": "Returns the address of the current owner."
+        },
+        "releasableAmount(address)": {
+          "details": "Tokens that are vested but not yet claimed",
+          "params": {
+            "beneficiary": "Address to check"
+          },
+          "returns": {
+            "_0": "uint256 Amount available to release"
+          }
+        },
+        "release()": {
+          "details": "Can only be called by the beneficiary Requirements: - Caller must be the beneficiary - Must have a vesting schedule - Must have unreleased vested tokens available Effects: - Calculates vested amount - Updates released amount in storage - Transfers tokens to beneficiary - Emits TokensReleased event Gas Cost: ~80,000 gas"
+        },
+        "renounceOwnership()": {
+          "details": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner."
+        },
+        "revoke(address)": {
+          "details": "Can only be called by contract owner",
+          "params": {
+            "beneficiary": "Address whose schedule to revoke Requirements: - Only owner can call - Schedule must exist - Schedule must be revocable - Schedule must not already be revoked Effects: - Calculates vested amount at revocation time - Transfers vested amount to beneficiary - Returns unvested amount to owner - Marks schedule as revoked - Emits VestingRevoked event Example Use Case: Employee leaves company after 2 years of 4-year vesting - Vested tokens (50%) go to employee - Unvested tokens (50%) return to company"
+          }
+        },
+        "transferOwnership(address)": {
+          "details": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."
+        },
+        "vestedAmount(address)": {
+          "details": "Public view function - no gas cost when called externally",
+          "params": {
+            "beneficiary": "Address to check"
+          },
+          "returns": {
+            "_0": "uint256 Amount of tokens vested (not necessarily released) Vesting Formula: - Before cliff: 0% vested - After cliff, before end: Linear vesting - After end: 100% vested Linear calculation: vestedAmount = totalAmount * (timeElapsed / totalDuration) Example: - Total: 1,000 tokens - Duration: 4 years - After 2 years: 500 tokens vested - After 4 years: 1,000 tokens vested"
+          }
+        }
+      },
+      "stateVariables": {
+        "token": {
+          "details": "Immutable after deployment for gas optimization"
+        },
+        "vestingSchedules": {
+          "details": "One schedule per beneficiary in MVP version"
+        }
+      },
+      "title": "TokenVesting",
+      "version": 1
+    },
+    "userdoc": {
+      "events": {
+        "TokensReleased(address,uint256)": {
+          "notice": "Emitted when vested tokens are released to beneficiary"
+        },
+        "VestingRevoked(address,uint256)": {
+          "notice": "Emitted when a vesting schedule is revoked"
+        },
+        "VestingScheduleCreated(address,uint256,uint256,uint256,uint256)": {
+          "notice": "Emitted when a new vesting schedule is created"
+        }
+      },
+      "kind": "user",
+      "methods": {
+        "constructor": {
+          "notice": "Token address is immutable after deployment Make sure to use the correct token contract! Requirements: - Token address cannot be zero address"
+        },
+        "createVestingSchedule(address,uint256,uint256,uint256,bool)": {
+          "notice": "Create a vesting schedule for a beneficiary"
+        },
+        "getVestingSchedule(address)": {
+          "notice": "Get complete vesting schedule for a beneficiary"
+        },
+        "hasVestingSchedule(address)": {
+          "notice": "Check if address has a vesting schedule"
+        },
+        "releasableAmount(address)": {
+          "notice": "Calculate unreleased vested amount"
+        },
+        "release()": {
+          "notice": "Release vested tokens to beneficiary"
+        },
+        "revoke(address)": {
+          "notice": "Revoke a vesting schedule and return unvested tokens"
+        },
+        "token()": {
+          "notice": "The ERC20 token being vested"
+        },
+        "vestedAmount(address)": {
+          "notice": "Calculate vested amount for a beneficiary"
+        },
+        "vestingSchedules(address)": {
+          "notice": "Mapping of beneficiary address to their vesting schedule"
+        }
+      },
+      "notice": "This contract enables organizations to create vesting schedules for tokens with configurable cliff periods and linear vesting over time. Key Features: - Linear vesting with cliff periods - Single vesting schedule per beneficiary - Revocable schedules (optional) - ERC20 compatible (works with any standard token) - Gas optimized with OpenZeppelin libraries Use Cases: - Employee equity compensation - Investor token lockups - Team token allocations - Advisor grants Security: - ReentrancyGuard protection - SafeERC20 for token transfers - Comprehensive input validation - Event emission for transparency",
+      "version": 1
+    }
+  },
+  "settings": {
+    "compilationTarget": {
+      "contracts/TokenVesting.sol": "TokenVesting"
+    },
+    "evmVersion": "paris",
+    "libraries": {},
+    "metadata": {
+      "bytecodeHash": "ipfs"
+    },
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "remappings": []
+  },
+  "sources": {
+    "@openzeppelin/contracts/access/Ownable.sol": {
+      "keccak256": "0xff6d0bb2e285473e5311d9d3caacb525ae3538a80758c10649a4d61029b017bb",
+      "license": "MIT",
+      "urls": [
+        "bzz-raw://8ed324d3920bb545059d66ab97d43e43ee85fd3bd52e03e401f020afb0b120f6",
+        "dweb:/ipfs/QmfEckWLmZkDDcoWrkEvMWhms66xwTLff9DDhegYpvHo1a"
+      ]
+    },
+    "@openzeppelin/contracts/interfaces/IERC1363.sol": {
+      "keccak256": "0xd5ea07362ab630a6a3dee4285a74cf2377044ca2e4be472755ad64d7c5d4b69d",
+      "license": "MIT",
+      "urls": [
+        "bzz-raw://da5e832b40fc5c3145d3781e2e5fa60ac2052c9d08af7e300dc8ab80c4343100",
+        "dweb:/ipfs/QmTzf7N5ZUdh5raqtzbM11yexiUoLC9z3Ws632MCuycq1d"
+      ]
+    },
+    "@openzeppelin/contracts/interfaces/IERC165.sol": {
+      "keccak256": "0x0afcb7e740d1537b252cb2676f600465ce6938398569f09ba1b9ca240dde2dfc",
+      "license": "MIT",
+      "urls": [
+        "bzz-raw://1c299900ac4ec268d4570ecef0d697a3013cd11a6eb74e295ee3fbc945056037",
+        "dweb:/ipfs/Qmab9owJoxcA7vJT5XNayCMaUR1qxqj1NDzzisduwaJMcZ"
+      ]
+    },
+    "@openzeppelin/contracts/interfaces/IERC20.sol": {
+      "keccak256": "0x1a6221315ce0307746c2c4827c125d821ee796c74a676787762f4778671d4f44",
+      "license": "MIT",
+      "urls": [
+        "bzz-raw://1bb2332a7ee26dd0b0de9b7fe266749f54820c99ab6a3bcb6f7e6b751d47ee2d",
+        "dweb:/ipfs/QmcRWpaBeCYkhy68PR3B4AgD7asuQk7PwkWxrvJbZcikLF"
+      ]
+    },
+    "@openzeppelin/contracts/token/ERC20/IERC20.sol": {
+      "keccak256": "0x74ed01eb66b923d0d0cfe3be84604ac04b76482a55f9dd655e1ef4d367f95bc2",
+      "license": "MIT",
+      "urls": [
+        "bzz-raw://5282825a626cfe924e504274b864a652b0023591fa66f06a067b25b51ba9b303",
+        "dweb:/ipfs/QmeCfPykghhMc81VJTrHTC7sF6CRvaA1FXVq2pJhwYp1dV"
+      ]
+    },
+    "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol": {
+      "keccak256": "0x982c5cb790ab941d1e04f807120a71709d4c313ba0bfc16006447ffbd27fbbd5",
+      "license": "MIT",
+      "urls": [
+        "bzz-raw://8150ceb4ac947e8a442b2a9c017e01e880b2be2dd958f1fa9bc405f4c5a86508",
+        "dweb:/ipfs/QmbcBmFX66AY6Kbhnd5gx7zpkgqnUafo43XnmayAM7zVdB"
+      ]
+    },
+    "@openzeppelin/contracts/utils/Context.sol": {
+      "keccak256": "0x493033a8d1b176a037b2cc6a04dad01a5c157722049bbecf632ca876224dd4b2",
+      "license": "MIT",
+      "urls": [
+        "bzz-raw://6a708e8a5bdb1011c2c381c9a5cfd8a9a956d7d0a9dc1bd8bcdaf52f76ef2f12",
+        "dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF"
+      ]
+    },
+    "@openzeppelin/contracts/utils/ReentrancyGuard.sol": {
+      "keccak256": "0x11a5a79827df29e915a12740caf62fe21ebe27c08c9ae3e09abe9ee3ba3866d3",
+      "license": "MIT",
+      "urls": [
+        "bzz-raw://3cf0c69ab827e3251db9ee6a50647d62c90ba580a4d7bbff21f2bea39e7b2f4a",
+        "dweb:/ipfs/QmZiKwtKU1SBX4RGfQtY7PZfiapbbu6SZ9vizGQD9UHjRA"
+      ]
+    },
+    "@openzeppelin/contracts/utils/introspection/IERC165.sol": {
+      "keccak256": "0x8891738ffe910f0cf2da09566928589bf5d63f4524dd734fd9cedbac3274dd5c",
+      "license": "MIT",
+      "urls": [
+        "bzz-raw://971f954442df5c2ef5b5ebf1eb245d7105d9fbacc7386ee5c796df1d45b21617",
+        "dweb:/ipfs/QmadRjHbkicwqwwh61raUEapaVEtaLMcYbQZWs9gUkgj3u"
+      ]
+    },
+    "contracts/TokenVesting.sol": {
+      "keccak256": "0x84489ceb44c75c2f07eeb7a6a382e089ac1d8de15845f78f4d6e3d3bda75340b",
+      "license": "GPL-3.0",
+      "urls": [
+        "bzz-raw://b395b42997980e64416226803317d8b5db6c10efd412cc0f1cdc7b788bab09d0",
+        "dweb:/ipfs/QmZPNsYc8ACrHJM6FqYhfyWzrg6FtqDM8WDDfgqwnEZ11x"
+      ]
+    }
+  },
+  "version": 1
+}
