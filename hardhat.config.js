@@ -67,4 +67,7 @@ module.exports = {
     enabled: process.env.REPORT_GAS === "true",
     currency: "USD",
   },
+  mocha: {
+    timeout: 60000, // 60 seconds - allows time for contract deployment in first test
+  },
 };
