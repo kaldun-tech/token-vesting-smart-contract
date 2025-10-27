@@ -24,6 +24,8 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['@wagmi/connectors'],
   },
+  // Increase static generation timeout for complex pages
+  staticPageGenerationTimeout: 300,
 }
 
 module.exports = nextConfig
